@@ -1,1 +1,1 @@
-DEV_MOD = False
+DEV_MOD = True
