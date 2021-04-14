@@ -8,6 +8,7 @@ import datetime
 def unzip(file, path):
     with zipfile.ZipFile(file, 'r') as zip_ref:
         zip_ref.extractall(path)
+    os.remove(file)
 
 
 def getFileLines(file):

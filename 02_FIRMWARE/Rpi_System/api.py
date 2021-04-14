@@ -1,8 +1,8 @@
-from updater.Update_System import GithubDownloader
-from updater.Util import checkInternetConnection
+from Update_System import GithubDownloader
+from Util import checkInternetConnection
 
 
-url = "https://api.github.com/repos/MetaIndustry/printotype-firmware/releases/latest"
+url = "https://api.github.com/repos/NLSS-Engineering/21005_Medical_Tube_Capping/releases/latest"
 
 
 if checkInternetConnection():
