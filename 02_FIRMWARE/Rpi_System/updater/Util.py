@@ -18,10 +18,21 @@ def getFileLines(file):
 
 def getFileLine(file):
     f = open(file, "r")
+    return f.readline()
+
+
+def getFileLine(file):
+    f = open(file, "r")
     line = f.readline()
     if '#' in line:
         return line.split('#')[0].strip()
     return line.strip()
+
+
+def write_file(file, line):
+    f = open(file, "w")
+    f.write('{}\n'.format(line))
+    f.close()
 
 
 ################################

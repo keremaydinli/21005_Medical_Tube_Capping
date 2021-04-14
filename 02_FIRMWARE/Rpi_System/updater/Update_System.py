@@ -5,10 +5,11 @@ import time
 import logging
 
 from .Encryption import Encryptor
-from .Util import getFileLine, unzip
+from .Util import unzip, getFileLines, write_file
 from .Terminal import Command
 
-__VERSION__ = '0.0.0'
+version_file_path = './version.txt'
+__VERSION__ = getFileLines(version_file_path)[0]
 
 
 class GithubDownloader:
@@ -64,14 +65,14 @@ class GithubDownloader:
         return __VERSION__
 
     def get_latest_version(self):
-        return self.json['name']
+        return str(self.json['name'])
 
     def is_new_version(self):
         regex = '(\d+).(\d+).(\d+)'
         latest = self.get_latest_version()
         match = re.search(regex, latest)
         if match:
-            if str(latest) == str(__VERSION__):
+            if latest == __VERSION__:  # TODO: latest and version are same but not match
                 logging.info('System up to date. {}'.format(__VERSION__))
                 return False
             __NEW_VERSION__ = match.group()
@@ -104,7 +105,7 @@ class GithubDownloader:
                     logging.info('Decrypting Finished.')
                     logging.debug('System Upgraded.')
                 self.upgrade_screen()
-
+                write_file(version_file_path, self.get_latest_version())
             except (FileNotFoundError, OSError):
                 logging.error('Firstly, you need to download the file!')
                 pass

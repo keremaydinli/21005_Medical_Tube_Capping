@@ -279,7 +279,7 @@ class printcore():
             self.read_thread = threading.Thread(target = self._listen)
             self.read_thread.start()
             self.tempListenThread = threading.Thread(target=self.TempListener)  # Start Listening Printer
-            # Temperature on Serial Communications
+            # Temperature on Serial Communication
             self.tempListenThread.start()
             self._start_sender()
 
@@ -295,7 +295,7 @@ class printcore():
         try:
             try:
                 try:
-                    line = self.printer.read_line().decode('UTF-8')
+                    line = self.printer.readline().decode('UTF-8')
                 except UnicodeDecodeError:
                     self.logError(_("Got rubbish reply from %s at baudrate %s:") % (self.port, self.baud) +
                                   "\n" + _("Maybe a bad baudrate?"))
@@ -339,7 +339,7 @@ class printcore():
             return not self.stop_read_thread and self.printer
         return (not self.stop_read_thread
                 and self.printer
-                and self.printer.is_open())
+                and self.printer.isOpen())
 
     def _listen_until_online(self):
         while self._listen_can_continue():

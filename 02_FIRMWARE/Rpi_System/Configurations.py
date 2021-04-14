@@ -1,1 +1,1 @@
-DEV_MOD = True
+DEV_MOD = False  # False -> RELEASE MOD // True -> DEVELOPMENT MOD

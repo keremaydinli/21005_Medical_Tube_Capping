@@ -1,4 +1,3 @@
-import random
 import time
 
 import Configurations
@@ -22,9 +21,9 @@ def startup_update():
         gd = GithubDownloader(url, encrypted=True, auto_download=True, path='./', unzip_path="./Files/EXTRACT/")
         # RELEASE: unzip path ve path girilmeyecek
         # gd.download()  # if AutoDownload is True, it's not necessary
-        if gd.is_new_version():
+        # if gd.is_new_version():
             # change screen to update screen
-            pass
+            # pass
         gd.upgrade_system()
 
 
@@ -38,7 +37,11 @@ def create_connections():
         time.sleep(1)
         if motherboard.is_connect():
             break
-    print('MotherBoard Port: {}'.format(motherboard.get_port()))
+    if motherboard.is_connect():
+        print('MotherBoard Port: {}'.format(motherboard.get_port()))
+    else:
+        motherboard = None
+        print('ERROR: MotherBoard not connected.')
 
 
 if __name__ == "__main__":
