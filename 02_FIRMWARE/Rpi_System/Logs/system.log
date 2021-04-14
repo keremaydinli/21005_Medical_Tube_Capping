@@ -5,19 +5,8 @@ INFO:root:Download Started...
 DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): api.github.com:443
 DEBUG:urllib3.connectionpool:https://api.github.com:443 "GET /repos/NLSS-Engineering/21005_Medical_Tube_Capping/releases/assets/34984924 HTTP/1.1" 302 0
 DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): github-releases.githubusercontent.com:443
-DEBUG:urllib3.connectionpool:https://github-releases.githubusercontent.com:443 "GET /353114805/1d324680-9d0a-11eb-8c19-4f0dc5873561?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20210414%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20210414T071951Z&X-Amz-Expires=300&X-Amz-Signature=86b0a10cc969e49c6d28435587b78f30da3cbf2c6ddb51132eaf24d64c97a556&X-Amz-SignedHeaders=host&actor_id=0&key_id=0&repo_id=353114805&response-content-disposition=attachment%3B%20filename%3DEncrypted.zip&response-content-type=application%2Foctet-stream HTTP/1.1" 200 1125255
-INFO:root:Download Finished in 0.93 seconds.
-INFO:root:Decrypting...
-ERROR:root:Firstly, you need to download the file!
-INFO:root:There is new version: 0.0.1
-INFO:root:There is new version: 0.0.1
-INFO:root:Download Started...
-[INFO] Zip File Name: Encrypted.zip. File Size: 1125255.
-DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): api.github.com:443
-DEBUG:urllib3.connectionpool:https://api.github.com:443 "GET /repos/NLSS-Engineering/21005_Medical_Tube_Capping/releases/assets/34984924 HTTP/1.1" 302 0
-DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): github-releases.githubusercontent.com:443
-DEBUG:urllib3.connectionpool:https://github-releases.githubusercontent.com:443 "GET /353114805/1d324680-9d0a-11eb-8c19-4f0dc5873561?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20210414%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20210414T071951Z&X-Amz-Expires=300&X-Amz-Signature=86b0a10cc969e49c6d28435587b78f30da3cbf2c6ddb51132eaf24d64c97a556&X-Amz-SignedHeaders=host&actor_id=0&key_id=0&repo_id=353114805&response-content-disposition=attachment%3B%20filename%3DEncrypted.zip&response-content-type=application%2Foctet-stream HTTP/1.1" 200 1125255
-INFO:root:Download Finished in 1.07 seconds.
+DEBUG:urllib3.connectionpool:https://github-releases.githubusercontent.com:443 "GET /353114805/1d324680-9d0a-11eb-8c19-4f0dc5873561?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20210414%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20210414T091233Z&X-Amz-Expires=300&X-Amz-Signature=4690c4cf16f4abc58dab626c562eb0d9e7143e9ce4418bb99cee0358024112f8&X-Amz-SignedHeaders=host&actor_id=0&key_id=0&repo_id=353114805&response-content-disposition=attachment%3B%20filename%3DEncrypted.zip&response-content-type=application%2Foctet-stream HTTP/1.1" 200 1125255
+INFO:root:Download Finished in 1.50 seconds.
 INFO:root:Decrypting...
 INFO:root:Decrypting Finished.
 DEBUG:root:System Upgraded.
@@ -30,19 +19,8 @@ INFO:root:Download Started...
 DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): api.github.com:443
 DEBUG:urllib3.connectionpool:https://api.github.com:443 "GET /repos/NLSS-Engineering/21005_Medical_Tube_Capping/releases/assets/34984924 HTTP/1.1" 302 0
 DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): github-releases.githubusercontent.com:443
-DEBUG:urllib3.connectionpool:https://github-releases.githubusercontent.com:443 "GET /353114805/1d324680-9d0a-11eb-8c19-4f0dc5873561?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20210414%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20210414T072158Z&X-Amz-Expires=300&X-Amz-Signature=28514e4d7e21ea02f87762f8817fd8578429dd67313ec3544b0b1f72c1eba7c5&X-Amz-SignedHeaders=host&actor_id=0&key_id=0&repo_id=353114805&response-content-disposition=attachment%3B%20filename%3DEncrypted.zip&response-content-type=application%2Foctet-stream HTTP/1.1" 200 1125255
-INFO:root:Download Finished in 1.27 seconds.
-INFO:root:Decrypting...
-ERROR:root:Firstly, you need to download the file!
-INFO:root:There is new version: 0.0.1
-INFO:root:There is new version: 0.0.1
-INFO:root:Download Started...
-[INFO] Zip File Name: Encrypted.zip. File Size: 1125255.
-DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): api.github.com:443
-DEBUG:urllib3.connectionpool:https://api.github.com:443 "GET /repos/NLSS-Engineering/21005_Medical_Tube_Capping/releases/assets/34984924 HTTP/1.1" 302 0
-DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): github-releases.githubusercontent.com:443
-DEBUG:urllib3.connectionpool:https://github-releases.githubusercontent.com:443 "GET /353114805/1d324680-9d0a-11eb-8c19-4f0dc5873561?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20210414%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20210414T072158Z&X-Amz-Expires=300&X-Amz-Signature=28514e4d7e21ea02f87762f8817fd8578429dd67313ec3544b0b1f72c1eba7c5&X-Amz-SignedHeaders=host&actor_id=0&key_id=0&repo_id=353114805&response-content-disposition=attachment%3B%20filename%3DEncrypted.zip&response-content-type=application%2Foctet-stream HTTP/1.1" 200 1125255
-INFO:root:Download Finished in 0.92 seconds.
+DEBUG:urllib3.connectionpool:https://github-releases.githubusercontent.com:443 "GET /353114805/1d324680-9d0a-11eb-8c19-4f0dc5873561?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20210414%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20210414T091233Z&X-Amz-Expires=300&X-Amz-Signature=4690c4cf16f4abc58dab626c562eb0d9e7143e9ce4418bb99cee0358024112f8&X-Amz-SignedHeaders=host&actor_id=0&key_id=0&repo_id=353114805&response-content-disposition=attachment%3B%20filename%3DEncrypted.zip&response-content-type=application%2Foctet-stream HTTP/1.1" 200 1125255
+INFO:root:Download Finished in 1.21 seconds.
 INFO:root:Decrypting...
 INFO:root:Decrypting Finished.
 DEBUG:root:System Upgraded.

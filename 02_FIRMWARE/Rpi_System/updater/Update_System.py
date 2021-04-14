@@ -4,9 +4,9 @@ import re
 import time
 import logging
 
-from Encryption import Encryptor
-from Util import getFileLine, unzip
-from Terminal import Command
+from .Encryption import Encryptor
+from .Util import getFileLine, unzip
+from .Terminal import Command
 
 __VERSION__ = '0.0.0'
 
@@ -32,7 +32,7 @@ class GithubDownloader:
             self.encryptor = Encryptor()
         else:
             self.encryptor = None
-        logging.basicConfig(filename=self.path + "Logs/system.log", level=logging.NOTSET)
+        logging.basicConfig(filename="./Logs/system.log", level=logging.NOTSET)
 
     def set_encryptor_key(self, encryptor):
         self.encryptor.load_key(encryptor)
@@ -110,10 +110,8 @@ class GithubDownloader:
                 pass
 
     def upgrade_screen(self):
-        line = getFileLine(self.path + "/UpgradeList.txt")
-        if '07081995' == line:  # UPGRADE SCREEN
-            logging.info('Screen is Upgrading...')
-            # c = Command("python3 upgrader.py kaucukScreenDesign.tft")
-            c = Command("dir ..")
-            if c.run(9999) == 0:
-                logging.debug('Screen Upgraded.')
+        logging.info('Screen is Upgrading...')
+        # c = Command("python3 upgrader.py kaucukScreenDesign.tft")
+        c = Command("dir ..")
+        if c.run(9999) == 0:
+            logging.debug('Screen Upgraded.')
