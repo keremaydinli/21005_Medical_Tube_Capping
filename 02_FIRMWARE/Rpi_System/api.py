@@ -1,3 +1,4 @@
+import Configurations
 from updater.Update_System import GithubDownloader
 from updater.Util import checkInternetConnection
 
@@ -16,4 +17,5 @@ def startup_update():
 
 
 if __name__ == "__main__":
-    startup_update()
+    if not Configurations.DEV_MOD:
+        startup_update()
