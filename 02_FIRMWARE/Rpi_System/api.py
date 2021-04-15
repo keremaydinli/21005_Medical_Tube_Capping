@@ -9,7 +9,7 @@ from Communications.Utils import serial_ports
 
 # Parameters #
 url = "https://api.github.com/repos/NLSS-Engineering/21005_Medical_Tube_Capping/releases/latest"
-screenPort = ''
+screenPort = '/dev/ttyAMA0'
 
 # Objects #
 motherboard = None
@@ -29,7 +29,7 @@ def startup_update():
 
 def create_connections():
     global motherboard, screen
-    # screen = ScreenCommunication(screenPort)
+    screen = ScreenCommunication(screenPort)
     _ports = serial_ports()
     print('ports: {}'.format(_ports))
     for _port in _ports:
@@ -49,4 +49,4 @@ if __name__ == "__main__":
         startup_update()
 
     create_connections()
-
+    print('Ready to use.')
