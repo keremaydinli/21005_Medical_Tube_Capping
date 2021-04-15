@@ -16,7 +16,6 @@ class ScreenCommunication:
         if self.port and self.baudrate:
             self.connection = serial.Serial(self.port, self.baudrate, timeout=0.25)
             self.send('connect')
-            self.send(self.eof)
             time.sleep(1)
             self.send('page p_main')  # 'page page0'  -> main page
 
