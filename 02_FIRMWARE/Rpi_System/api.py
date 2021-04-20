@@ -8,7 +8,7 @@ from Communications.MotherBoard import MotherBoardCommunication
 from Communications.Screen import ScreenCommunication
 from Communications.Utils import serial_ports
 
-logging.basicConfig(filename="./Logs/system.log", level=logging.NOTSET, format='%(levelname)s:%(name)s:%(message)s')
+logging.basicConfig(filename="./Logs/system.log", filemode='w', level=logging.DEBUG, format='%(levelname)s : %(asctime)s : Line No. : %(lineno)d - %(message)s',)
 
 # Parameters #
 url = "https://api.github.com/repos/NLSS-Engineering/21005_Medical_Tube_Capping/releases/latest"
