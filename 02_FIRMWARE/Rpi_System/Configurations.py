@@ -1,1 +1,4 @@
-DEV_MOD = False  # False -> RELEASE MOD // True -> DEVELOPMENT MOD
+# DEV MOD:
+# False -> RELEASE MOD
+# True -> DEVELOPMENT MOD
+DEV_MOD = False
