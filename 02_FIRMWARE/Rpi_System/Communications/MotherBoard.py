@@ -32,10 +32,14 @@ class MotherBoardCommunication:
     def send(self, string):
         self.send_list.append(string)
 
+    def send_now(self, string):
+        self.connection.write((string + '\r\n').encode())
+
     def _sender(self):
         while True:
             if len(self.send_list):
                 self.connection.write((self.send_list[0] + '\r\n').encode())
+                self.connection.write(('M400' + '\r\n').encode())
                 self.send_list.pop(0)
             time.sleep(0.1)
 
