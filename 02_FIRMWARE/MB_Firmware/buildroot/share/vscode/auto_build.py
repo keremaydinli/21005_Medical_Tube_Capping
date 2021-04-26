@@ -419,7 +419,7 @@ def open_file(path):
 # Get the last build environment
 def get_build_last():
   env_last = ''
-  DIR_PWD = os.listdir('')
+  DIR_PWD = os.listdir('.')
   if '.pio' in DIR_PWD:
     date_last = 0.0
     DIR__pioenvs = os.listdir('.pio')
