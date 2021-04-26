@@ -1,3 +1,4 @@
+import threading
 import time
 import serial
 
@@ -7,10 +8,11 @@ class ScreenCommunication:
         self.port = port
         self.baudrate = baudrate
         self.connection = None
-        self.last_received = None
+        self.last_received = ""
         self.line = None
         self.eof = b'\xff\xff\xff'
         self.connect()
+        threading.Thread(target=self.listen).start()
 
     def connect(self):
         if self.port and self.baudrate:
@@ -34,11 +36,12 @@ class ScreenCommunication:
 
     def listen(self):
         while self.connection:
-            self.line = self.read()
-            if self.line and self.last_received is not self.line:
-                self.line = str(self.line.strip(self.eof), 'ascii')
+            self.line = self.read().strip(self.eof)
+            if len(self.line):
+                self.line = self.line.decode('ascii')
                 print('From Screen: {}'.format(self.line))
                 self.last_received = self.line
+                self.line = ""
 
     def get_port(self):
         return self.port
