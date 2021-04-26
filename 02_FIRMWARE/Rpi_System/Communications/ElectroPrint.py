@@ -53,11 +53,11 @@ class ElectroCommunication():
 
     def pause(self):
         self.connection.pause()
-        self.send("G91")
-        self.send("G0 Z5")
-        self.send("G90")
-        self.send("G90")
-        self.send("G0 X200 Y0")
+        # self.send("G91")
+        # self.send("G0 Z5")
+        # self.send("G90")
+        # self.send("G90")
+        # self.send("G0 X200 Y0")
 
     def resume(self):
         self.connection.resume()
@@ -65,13 +65,13 @@ class ElectroCommunication():
     def stop(self):
         self.printing = False
         self.connection.cancelprint()
-        self.send("M104 S0")
-        self.send("M107")
-        self.send("G91")
-        self.send("G0 Z5")
-        self.send("G90")
-        self.send("G90")
-        self.send("G0 X200 Y0")
+        # self.send("M104 S0")
+        # self.send("M107")
+        # self.send("G91")
+        # self.send("G0 Z5")
+        # self.send("G90")
+        # self.send("G90")
+        # self.send("G0 X200 Y0")
 
     def disconnect(self):
         self.connection.disconnect()

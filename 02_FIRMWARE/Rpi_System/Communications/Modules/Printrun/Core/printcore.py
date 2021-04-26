@@ -371,7 +371,7 @@ class printcore():
                     if empty_lines == 15: break
                 else: empty_lines = 0
                 if "T:" in line:
-                    self.TempChanger(line)
+                    #self.TempChanger(line)
                     self.online = True
                     for handler in self.event_handler:
                         try: handler.on_online()
@@ -682,6 +682,7 @@ class printcore():
         if self.printing and self.mainqueue.has_index(self.queueindex):
             (layer, line) = self.mainqueue.idxs(self.queueindex)
             gline = self.mainqueue.all_layers[layer][line]
+            print('DEBUG: printcore_gline: {}\tprintcore-line: {}'.format(gline, line))
             if self.queueindex > 0:
                 (prev_layer, prev_line) = self.mainqueue.idxs(self.queueindex - 1)
                 if prev_layer != layer:

@@ -61,14 +61,22 @@ if __name__ == "__main__":
     print('Ready to use.')
 
     # Must move G28 (HOMING)
-    s_protocol('start:20-13')
+
     while True:
-        # Received Screen Command Convert to MB Command Array
-        commands = str(s_protocol(screen.last_received))
+        if len(screen.last_received):
+            if 'acil-stop' in screen.last_received:
+                # Emergency Stop
+                # motherboard.sendNow('M112')
+                motherboard.stop()
+                screen.send('page p_main')
+            else:
+                # Received Screen Command Convert to MB Command Array
+                commands = s_protocol(screen.last_received)
 
-        # # Send Command to Motherboard
-        motherboard.startPrinting(send_file)
+                # # Send Command to Motherboard
+                motherboard.startPrinting(send_file)
+                screen.send('page p_running')
 
-        screen.last_received = ""
+                screen.last_received = ""
 
         time.sleep(0.1)
