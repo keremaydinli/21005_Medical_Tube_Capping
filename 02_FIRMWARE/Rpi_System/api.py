@@ -48,5 +48,5 @@ if __name__ == "__main__":
     if not Configurations.DEV_MOD:
         startup_update()
 
-    create_connections()
+    #create_connections()
     print('Ready to use.')

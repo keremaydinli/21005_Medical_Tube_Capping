@@ -5,11 +5,11 @@ import time
 import logging
 
 from .Encryption import Encryptor
-from .Util import unzip, getFileLines, write_file
+from .Util import unzip, write_file, getFileLines
 from .Terminal import Command
 
 version_file_path = './version.txt'
-__VERSION__ = getFileLines(version_file_path)[0]
+__VERSION__ = getFileLines(version_file_path)[0].strip()
 
 
 class GithubDownloader:
@@ -62,17 +62,19 @@ class GithubDownloader:
 
     @staticmethod
     def get_current_version():
+        print('current vers: {}'.format(__VERSION__))
         return __VERSION__
 
     def get_latest_version(self):
-        return str(self.json['name'])
+        return self.json['name']
 
     def is_new_version(self):
         regex = '(\d+).(\d+).(\d+)'
         latest = self.get_latest_version()
         match = re.search(regex, latest)
+        print('debug: {}'.format(latest == self.get_current_version()))
         if match:
-            if latest == __VERSION__:  # TODO: latest and version are same but not match
+            if latest == self.get_current_version():
                 logging.info('System up to date. {}'.format(__VERSION__))
                 return False
             __NEW_VERSION__ = match.group()

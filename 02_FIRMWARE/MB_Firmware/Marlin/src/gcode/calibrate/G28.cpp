@@ -66,8 +66,8 @@
   void clearHoming(feedRate_t fr_mm_s){
     current_position.set(0.0, Y_BED_SIZE);
     // destination.set(200, 0);
-    sync_plan_position(); 
-    do_blocking_move_to_y(0.0, fr_mm_s);
+    sync_plan_position();
+    do_blocking_move_to_y(-100.0, fr_mm_s);
     do_blocking_move_to_x(X_BED_SIZE, fr_mm_s / 2);
     // prepare_line_to_destination();
   }
@@ -75,8 +75,8 @@
   void clearHoming(feedRate_t fr_mm_s, xyz_int8_t homing_bump_feedrate){
     current_position.set(0.0, Y_BED_SIZE);
     // destination.set(200, 0);
-    sync_plan_position(); 
-    do_blocking_move_to_y(0.0, fr_mm_s / homing_bump_feedrate.y);
+    sync_plan_position();
+    do_blocking_move_to_y(-100.0, fr_mm_s / homing_bump_feedrate.y);
     do_blocking_move_to_x(X_BED_SIZE, fr_mm_s / homing_bump_feedrate.x);
     // prepare_line_to_destination();
   }
@@ -86,7 +86,7 @@
     feedRate_t fr_mm_s = HOMING_FEEDRATE_XY;
     current_position.set(0.0, 0.0);
     // destination.set(200, 0);
-    sync_plan_position(); 
+    sync_plan_position();
     do_blocking_move_to_y(homing_bump.y * Y_HOME_DIR, fr_mm_s);
     do_blocking_move_to_x(homing_bump.x * X_HOME_DIR, fr_mm_s);
   }
