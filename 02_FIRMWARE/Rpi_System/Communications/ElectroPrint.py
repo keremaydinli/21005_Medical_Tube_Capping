@@ -33,6 +33,12 @@ class ElectroCommunication():
     def is_connect(self):
         return self.connection.printer.isOpen()
 
+    def is_ready(self):
+        return self.ready
+
+    def get_port(self):
+        return self.port
+
     def startPrinting(self, file):
         gcode = [i.strip() for i in open(file)]
         gcode = gcoder.LightGCode(gcode)

@@ -20,6 +20,9 @@ screenPort = '/dev/ttyAMA0'
 motherboard = None
 screen = None
 
+# Variables
+send_file = 'temp_send_g_code_file.txt'
+
 
 def startup_update():
     if check_internet_connection():
@@ -51,10 +54,10 @@ def create_connections():
 
 
 if __name__ == "__main__":
-    # if not Configurations.DEV_MOD:
-    #    startup_update()
+    if not Configurations.DEV_MOD:
+       startup_update()
 
-    create_connections()
+    # create_connections()
     print('Ready to use.')
 
     # Must move G28 (HOMING)
@@ -64,5 +67,4 @@ if __name__ == "__main__":
     # commands = str(s_protocol(screen.last_received))
     #
     # # Send Command to Motherboard
-    # for command in commands:
-    #     motherboard.send(command)
+    # motherboard.startPrinting(send_file)

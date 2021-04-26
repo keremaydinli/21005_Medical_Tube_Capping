@@ -22,6 +22,9 @@ def s_protocol(received):
             for line in one_shoot_g_codes:
                 generated_g_codes.append(line.strip())
 
+        f = open('temp_send_g_code_file.txt', "w")
         for line in generated_g_codes:
-            print(line)
+            f.write(line + '\n')
+        f.close()
+
         return generated_g_codes
