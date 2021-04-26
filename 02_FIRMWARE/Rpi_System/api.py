@@ -61,10 +61,14 @@ if __name__ == "__main__":
     print('Ready to use.')
 
     # Must move G28 (HOMING)
-    s_protocol('start:121-13')
+    s_protocol('start:20-13')
+    while True:
+        # Received Screen Command Convert to MB Command Array
+        commands = str(s_protocol(screen.last_received))
 
-    # Received Screen Command Convert to MB Command Array
-    # commands = str(s_protocol(screen.last_received))
-    #
-    # # Send Command to Motherboard
-    # motherboard.startPrinting(send_file)
+        # # Send Command to Motherboard
+        motherboard.startPrinting(send_file)
+
+        screen.last_received = ""
+
+        time.sleep(0.1)

@@ -20,7 +20,7 @@ def s_protocol(received):
 
         for index in range(0, int_miktar):
             for line in one_shoot_g_codes:
-                generated_g_codes.append(line.strip())
+                generated_g_codes.append(special_cases(line.strip()))
 
         f = open('temp_send_g_code_file.txt', "w")
         for line in generated_g_codes:
@@ -28,3 +28,8 @@ def s_protocol(received):
         f.close()
 
         return generated_g_codes
+
+
+def special_cases(line):
+
+    return line

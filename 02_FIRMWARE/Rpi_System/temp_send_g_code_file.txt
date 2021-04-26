@@ -1,78 +1,52 @@
 1516
-G0 X100 Y100 F8000
-M280 P1 S70
-T0
-G1 E100 F8000
-------
+dsadas
+dasdas
+barıs
 1516
-G0 X100 Y100 F8000
-M280 P1 S70
-T0
-G1 E100 F8000
-------
+dsadas
+dasdas
+barıs
 1516
-G0 X100 Y100 F8000
-M280 P1 S70
-T0
-G1 E100 F8000
-------
+dsadas
+dasdas
+barıs
 1516
-G0 X100 Y100 F8000
-M280 P1 S70
-T0
-G1 E100 F8000
-------
+dsadas
+dasdas
+barıs
 1516
-G0 X100 Y100 F8000
-M280 P1 S70
-T0
-G1 E100 F8000
-------
+dsadas
+dasdas
+barıs
 1516
-G0 X100 Y100 F8000
-M280 P1 S70
-T0
-G1 E100 F8000
-------
+dsadas
+dasdas
+barıs
 1516
-G0 X100 Y100 F8000
-M280 P1 S70
-T0
-G1 E100 F8000
-------
+dsadas
+dasdas
+barıs
 1516
-G0 X100 Y100 F8000
-M280 P1 S70
-T0
-G1 E100 F8000
-------
+dsadas
+dasdas
+barıs
 1516
-G0 X100 Y100 F8000
-M280 P1 S70
-T0
-G1 E100 F8000
-------
+dsadas
+dasdas
+barıs
 1516
-G0 X100 Y100 F8000
-M280 P1 S70
-T0
-G1 E100 F8000
-------
+dsadas
+dasdas
+barıs
 1516
-G0 X100 Y100 F8000
-M280 P1 S70
-T0
-G1 E100 F8000
-------
+dsadas
+dasdas
+barıs
 1516
-G0 X100 Y100 F8000
-M280 P1 S70
-T0
-G1 E100 F8000
-------
+dsadas
+dasdas
+barıs
 1516
-G0 X100 Y100 F8000
-M280 P1 S70
-T0
-G1 E100 F8000
-------
+dsadas
+dasdas
+barıs
