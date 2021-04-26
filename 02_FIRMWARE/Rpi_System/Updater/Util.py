@@ -11,12 +11,12 @@ def unzip(file, path):
     os.remove(file)
 
 
-def getFileLines(file):
+def get_file_lines(file):
     f = open(file, "r")
     return f.readlines()
 
 
-def getFileLine(file):
+def get_file_line(file):
     f = open(file, "r")
     return f.readline()
 
@@ -30,18 +30,18 @@ def write_file(file, line):
 ################################
 
 ####### OS OPERATIONS ##########
-def isExistFolder(path):
+def is_folder_exist(path):
     return os.path.isdir(path)
 
 
-def isExistFile(path):
+def is_file_exist(path):
     return os.path.isfile(path)
 
 
 ################################
 
 ####### INTERNET OPERATIONS ##########
-def checkInternetConnection():
+def check_internet_connection():
     url = "http://www.google.com"
     timeout = 3
     try:
@@ -56,7 +56,7 @@ def checkInternetConnection():
 ################################
 
 ######### TIME OPERATIONS #############
-def getFullTime():
+def get_full_time():
     dateDay = datetime.datetime.strftime(datetime.datetime.now(), '%d')
     dateMonth = datetime.datetime.strftime(datetime.datetime.now(), '%m')
     timeMin = datetime.datetime.strftime(datetime.datetime.now(), '%M')

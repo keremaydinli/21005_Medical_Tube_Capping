@@ -5,20 +5,20 @@ import time
 import logging
 
 from .Encryption import Encryptor
-from .Util import unzip, write_file, getFileLines
+
+from .Util import unzip, get_file_lines, write_file
 from .Terminal import Command
 
 version_file_path = './version.txt'
-__VERSION__ = getFileLines(version_file_path)[0].strip()
+__VERSION__ = get_file_lines(version_file_path)[0].strip()
 
 
 class GithubDownloader:
-    def __init__(self, url=None, encrypted=False, auto_download=True, path=".", unzip_path="."):
+    def __init__(self, url=None, encrypted=False, path=".", unzip_path="."):
         # url = 'https://api.github.com/repos/MetaIndustry/printotype-firmware/releases/latest'
         self.url = url
         self.path = path + "/"
         self.unzipPath = self.path + unzip_path + "/"
-        self.AutoDownload = auto_download
         self.context = requests.get(self.url)
         self.json = self.context.json()
         self.packageName = None
@@ -33,7 +33,6 @@ class GithubDownloader:
             self.encryptor = Encryptor()
         else:
             self.encryptor = None
-        logging.basicConfig(filename="./Logs/system.log", level=logging.NOTSET)
 
     def set_encryptor_key(self, encryptor):
         self.encryptor.load_key(encryptor)
@@ -62,15 +61,16 @@ class GithubDownloader:
 
     @staticmethod
     def get_current_version():
-        return __VERSION__
+        return __VERSION__.strip()
 
     def get_latest_version(self):
-        return self.json['name']
+        return str(self.json['name'])
 
     def is_new_version(self):
         regex = '(\d+).(\d+).(\d+)'
         latest = self.get_latest_version()
         match = re.search(regex, latest)
+        print('DEBUG VERSION:\n\tRemote Latest: {}\tCurrent: {}'.format(latest, self.get_current_version()))
         if match:
             if latest == self.get_current_version():
                 logging.info('System up to date. {}'.format(__VERSION__))
@@ -80,20 +80,19 @@ class GithubDownloader:
             return True
 
     def download(self):
-        logging.info('Download Started...\n[INFO] Zip File Name: {}. File Size: {}.'
-                     .format(self.get_zip_file_name(), self.get_file_size()))
+        logging.info('Download Started...')
+        logging.info('Zip File Name: {}. File Size: {}.'.format(self.get_zip_file_name(), self.get_file_size()))
         with open(self.encryptedPath + self.get_zip_file_name(), 'wb') as f:
-            startDownloadTime = time.time()
+            start_download_time = time.time()
             for chunk in self.get_stream().iter_content(chunk_size=1024):
                 if chunk:
                     f.write(chunk)
                     f.flush()
-        logging.info('Download Finished in {:.2f} seconds.'.format(time.time() - startDownloadTime))
+        logging.info('Download Finished in {:.2f} seconds.'.format(time.time() - start_download_time))
 
     def upgrade_system(self):
         if self.is_new_version():
-            if self.AutoDownload:
-                self.download()
+            self.download()
 
             try:
                 if self.encryptor:
@@ -113,6 +112,6 @@ class GithubDownloader:
     def upgrade_screen(self):
         logging.info('Screen is Upgrading...')
         # c = Command("python3 upgrader.py kaucukScreenDesign.tft")
-        c = Command("dir ..")
+        c = Command("")
         if c.run(9999) == 0:
             logging.debug('Screen Upgraded.')

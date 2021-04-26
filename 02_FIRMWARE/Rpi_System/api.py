@@ -1,4 +1,5 @@
 import time
+import logging
 
 import Configurations
 from Updater.Update_System import GithubDownloader
@@ -8,6 +9,8 @@ from Communications.ElectroPrint import ElectroCommunication
 from Communications.Screen import ScreenCommunication
 from Communications.Utils import serial_ports
 from Communications.Protocol.Screen import s_protocol
+
+logging.basicConfig(filename="./Logs/system.log", filemode='w', level=logging.DEBUG, format='%(levelname)s : %(asctime)s : Line No. : %(lineno)d - %(message)s',)
 
 # Parameters #
 url = "https://api.github.com/repos/NLSS-Engineering/21005_Medical_Tube_Capping/releases/latest"
@@ -19,8 +22,8 @@ screen = None
 
 
 def startup_update():
-    if checkInternetConnection():
-        gd = GithubDownloader(url, encrypted=True, auto_download=True, path='./', unzip_path="./Files/EXTRACT/")
+    if check_internet_connection():
+        gd = GithubDownloader(url, encrypted=True, path='./', unzip_path="./Files/EXTRACT/")
         # RELEASE: unzip path ve path girilmeyecek
         # gd.download()  # if AutoDownload is True, it's not necessary
         # if gd.is_new_version():
