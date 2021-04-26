@@ -62,7 +62,6 @@ class GithubDownloader:
 
     @staticmethod
     def get_current_version():
-        print('current vers: {}'.format(__VERSION__))
         return __VERSION__
 
     def get_latest_version(self):
@@ -72,7 +71,6 @@ class GithubDownloader:
         regex = '(\d+).(\d+).(\d+)'
         latest = self.get_latest_version()
         match = re.search(regex, latest)
-        print('debug: {}'.format(latest == self.get_current_version()))
         if match:
             if latest == self.get_current_version():
                 logging.info('System up to date. {}'.format(__VERSION__))
