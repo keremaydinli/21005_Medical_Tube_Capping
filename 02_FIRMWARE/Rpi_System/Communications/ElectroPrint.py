@@ -1,6 +1,6 @@
 import serial
-from Modules.Printrun.Core import gcoder
-from Modules.Printrun.Core.printcore import printcore
+from .Modules.Printrun.Core import gcoder
+from .Modules.Printrun.Core.printcore import printcore
 
 
 class ElectroCommunication():

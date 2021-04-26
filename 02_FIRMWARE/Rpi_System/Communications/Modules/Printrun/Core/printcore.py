@@ -35,7 +35,7 @@ import re
 from datetime import datetime
 from functools import wraps, reduce
 from collections import deque
-from Core import gcoder
+from .gcoder import *
 from .utils import set_utf8_locale, install_locale, decode_utf8, RemainingTimeEstimator
 
 starttime = 0
@@ -45,7 +45,7 @@ try:
 except:
     pass
 install_locale('pronterface')
-from Core.plugins import PRINTCORE_HANDLER
+from .plugins import PRINTCORE_HANDLER
 
 def locked(f):
     @wraps(f)

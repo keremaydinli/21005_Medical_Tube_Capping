@@ -3,7 +3,7 @@ import logging
 
 import Configurations
 from Updater.Update_System import GithubDownloader
-from Updater.Util import checkInternetConnection
+from Updater.Util import check_internet_connection
 # from Communications.MotherBoard import MotherBoardCommunication
 from Communications.ElectroPrint import ElectroCommunication
 from Communications.Screen import ScreenCommunication
