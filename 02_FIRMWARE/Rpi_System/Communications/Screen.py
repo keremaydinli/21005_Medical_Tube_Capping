@@ -36,9 +36,9 @@ class ScreenCommunication:
 
     def listen(self):
         while self.connection:
-            self.line = self.read().strip(self.eof)
+            self.line = self.read()
             if len(self.line):
-                self.line = self.line.decode('ascii')
+                self.line = self.line.strip(self.eof).decode('ascii')
                 print('From Screen: {}'.format(self.line))
                 self.last_received = self.line
                 self.line = ""
