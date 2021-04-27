@@ -1,5 +1,4 @@
 import time
-import re
 import serial
 import threading
 

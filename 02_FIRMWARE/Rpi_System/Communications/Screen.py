@@ -9,7 +9,7 @@ class ScreenCommunication:
         self.baudrate = baudrate
         self.connection = None
         self.last_received = ""
-        self.line = None
+        self.line = ""
         self.eof = b'\xff\xff\xff'
         self.connect()
         threading.Thread(target=self.listen).start()

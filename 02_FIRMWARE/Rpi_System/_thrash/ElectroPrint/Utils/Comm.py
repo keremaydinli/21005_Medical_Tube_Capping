@@ -90,7 +90,7 @@ class ElectroCommunication():
         self.send("G0 X200 Y0")
 
     def disconnect(self):
-        self.connection.disconnect()
+        self.connection._disconnect()
 
     def reset(self):
         self.disconnect()
@@ -100,4 +100,4 @@ class ElectroCommunication():
         return self.connection.printing
 
     def isOnline(self):
-        return self.connection.isOnline()
+        return self.connection.is_online()

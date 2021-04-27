@@ -68,7 +68,7 @@ class JavaCommunication:
 
     def isOnline(self):
         # TODO: TEST
-        return self.connection.isOnline()
+        return self.connection.is_online()
 
     ## SETTERS ##
     def setIP(self, IP):

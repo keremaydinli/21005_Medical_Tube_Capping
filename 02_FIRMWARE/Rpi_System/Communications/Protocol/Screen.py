@@ -4,8 +4,12 @@ def get_file_lines(file):
 
 
 def s_protocol(received):
+    # TODO: bazi caseler tamamlanmadı gcodelar kontrol edilecek
+    
     generated_g_codes = []
-    FEEDRATE = ' F8000'
+    feedrate = ' F8000'
+
+    received = str(received).lower()
 
     if 'start' in received:
         # start:21-13
@@ -22,7 +26,9 @@ def s_protocol(received):
 
         for index in range(0, int_miktar):
             for line in one_shoot_g_codes:
-                generated_g_codes.append(special_cases(line.strip()))
+                line = line.strip()
+                line = special_cases(line)
+                generated_g_codes.append(line)
 
         f = open('temp_send_g_code_file.txt', "w")
         for line in generated_g_codes:
@@ -33,25 +39,25 @@ def s_protocol(received):
         # ileri:10
         dist = float(received.split(':')[1])
         generated_g_codes.append('G91')
-        generated_g_codes.append('G0 X' + dist + FEEDRATE)
+        generated_g_codes.append('G0 X' + str(dist) + feedrate)
         generated_g_codes.append('G90')
     elif 'sag' in received:
         # sag:1
         dist = float(received.split(':')[1])
         generated_g_codes.append('G91')
-        generated_g_codes.append('G0 Y' + dist + FEEDRATE)
+        generated_g_codes.append('G0 Y' + str(dist) + feedrate)
         generated_g_codes.append('G90')
     elif 'sol' in received:
         # sol:0.1
         dist = float(received.split(':')[1])
         generated_g_codes.append('G91')
-        generated_g_codes.append('G0 Y-' + dist + FEEDRATE)
+        generated_g_codes.append('G0 Y-' + str(dist) + feedrate)
         generated_g_codes.append('G90')
     elif 'geri' in received:
         # geri:10
         dist = float(received.split(':')[1])
         generated_g_codes.append('G91')
-        generated_g_codes.append('G0 X-' + dist + FEEDRATE)
+        generated_g_codes.append('G0 X-' + str(dist) + feedrate)
         generated_g_codes.append('G90')
     elif 'home' in received:
         # home
@@ -74,4 +80,5 @@ def s_protocol(received):
 
 
 def special_cases(line):
+    # TODO: daha sonra bakilacak
     return line
