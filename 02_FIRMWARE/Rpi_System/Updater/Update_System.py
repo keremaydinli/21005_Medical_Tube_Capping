@@ -8,6 +8,7 @@ from .Encryption import Encryptor
 
 from .Util import unzip, get_file_lines, write_file
 from .Terminal import Command
+from .ScreenUploader import screen_upload_tft_file
 
 version_file_path = './version.txt'
 __VERSION__ = get_file_lines(version_file_path)[0].strip()
@@ -103,15 +104,11 @@ class GithubDownloader:
                     unzip(self.decryptedPath + self.get_zip_file_name(), self.unzipPath)
                     logging.info('Decrypting Finished.')
                     logging.debug('System Upgraded.')
-                self.upgrade_screen()
+
+                # screen upgrade daha sonra eklenecek
+                # upgrade_screen('file_path')
+
                 write_file(version_file_path, self.get_latest_version())
             except (FileNotFoundError, OSError):
                 logging.error('Firstly, you need to download the file!')
                 pass
-
-    def upgrade_screen(self):
-        logging.info('Screen is Upgrading...')
-        # c = Command("python3 upgrader.py kaucukScreenDesign.tft")
-        c = Command("")
-        if c.run(9999) == 0:
-            logging.debug('Screen Upgraded.')

@@ -55,31 +55,35 @@ def create_connections():
 
 
 if __name__ == "__main__":
-    startup_update()
+    generated_g_code = s_protocol("start:05-3")
+    for line in generated_g_code:
+        print(line)
 
-    create_connections()
+    # startup_update()
+
+    # create_connections()
     print('Ready to use.')
 
     # Must move G28 (HOMING)
 
-    while True:
-        try:
-            if len(screen.last_received):
-                if 'acil-stop' in screen.last_received:
-                    # Emergency Stop
-                    # motherboard.sendNow('M112')
-                    motherboard.stop()
-                    screen.send('page p_main')
-                else:
-                    # Received Screen Command Convert to MB Command Array
-                    commands = s_protocol(screen.last_received)
-
-                    # # Send Command to Motherboard
-                    motherboard.startPrinting(send_file)
-                    screen.send('page p_running')
-
-                screen.last_received = ""
-        except:
-            pass
-
-        time.sleep(0.1)
+    # while True:
+    #     try:
+    #         if len(screen.last_received):
+    #             if 'acil-stop' in screen.last_received:
+    #                 # Emergency Stop
+    #                 # motherboard.sendNow('M112')
+    #                 motherboard.stop()
+    #                 screen.send('page p_main')
+    #             else:
+    #                 # Received Screen Command Convert to MB Command Array
+    #                 commands = s_protocol(screen.last_received)
+    #
+    #                 # # Send Command to Motherboard
+    #                 motherboard.startPrinting(send_file)
+    #                 screen.send('page p_running')
+    #
+    #             screen.last_received = ""
+    #     except:
+    #         pass
+    #
+    #     time.sleep(0.1)
