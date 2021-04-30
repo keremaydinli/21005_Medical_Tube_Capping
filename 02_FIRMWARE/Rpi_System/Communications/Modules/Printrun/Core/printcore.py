@@ -146,6 +146,7 @@ class printcore():
         self.fanSpeed = 0.0
         self.camera = None
         self.special = ['Z', 'M114', 'G28', 'G29', 'M220', 'M106', 'M107', 'count']
+        self.count = 0
 
     def addEventHandler(self, handler):
         '''
@@ -709,6 +710,12 @@ class printcore():
                 self.clear = True
                 return
             tline = gline.raw
+            ####
+            self.count = tline
+            if ';COUNT' in tline:
+                self.count += 1
+            ####
+
             if tline.lstrip().startswith(";@"):  # check for host command
                 self.process_host_command(tline)
                 self.queueindex += 1

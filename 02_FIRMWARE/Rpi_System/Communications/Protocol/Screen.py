@@ -25,6 +25,7 @@ def s_protocol(received):
         one_shoot_g_codes = get_file_lines('one_shoot_g_codes.txt')
 
         for index in range(0, int_miktar):
+            generated_g_codes.append(';COUNT:{}'.format(index+1))
             for line in one_shoot_g_codes:
                 line = line.strip()
                 line = special_cases(line, float_olcut)

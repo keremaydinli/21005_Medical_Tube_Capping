@@ -19,6 +19,9 @@ screenPort = '/dev/ttyAMA0'
 motherboard = None
 screen = None
 
+running = False
+total_tube_count = 0
+
 # Variables
 send_file = 'temp_send_g_code_file.txt'
 
@@ -36,7 +39,6 @@ def startup_update():
 
 def create_connections():
     global motherboard, screen
-    screen = ScreenCommunication(screenPort)
     _ports = serial_ports()
     print('ports: {}'.format(_ports))
     for _port in _ports:
@@ -52,9 +54,11 @@ def create_connections():
     else:
         motherboard = None
         print('ERROR: MotherBoard not connected.')
+    screen = ScreenCommunication(screenPort)
 
 
 if __name__ == "__main__":
+    # arr = s_protocol('start:21-13')
     startup_update()
 
     create_connections()
@@ -64,7 +68,7 @@ if __name__ == "__main__":
 
     while True:
         try:
-            if len(screen.last_received):
+            if len(screen.last_received) and not running:
                 if 'acil-stop' in screen.last_received:
                     # Emergency Stop
                     # motherboard.sendNow('M112')
@@ -75,11 +79,23 @@ if __name__ == "__main__":
                     commands = s_protocol(screen.last_received)
 
                     # # Send Command to Motherboard
-                    motherboard.startPrinting(send_file)
+                    motherboard.start_printing(send_file)
                     screen.send('page p_running')
+                    running = True
 
                 screen.last_received = ""
+            elif running:
+                motherboard = ElectroCommunication('', 250000)
+                screen = ScreenCommunication(screenPort)
+                tube_count = motherboard.get_tube_count()
+                total_tube_count += tube_count
+                screen.send('p_main.lbl_yapilanTup.txt="'+str(total_tube_count)+'"')
+                screen.send('p_running.lbl_yapilanTup.txt="'+str(total_tube_count)+'"')
+
         except:
             pass
 
+        if running and not motherboard.get_running():
+            screen.send('page p_running')
+            running = False
         time.sleep(0.1)

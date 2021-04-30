@@ -11,6 +11,7 @@ class ElectroCommunication:
         self.connection = self.connect()
         self.printing = False
         self.sendingList = []
+        self.line = ''
 
     def disconnect(self):
         if self.connection.isOpen():
@@ -34,6 +35,7 @@ class ElectroCommunication:
         return self.port
 
     def start_printing(self, file):
+        self.connection.count = 0
         gcode = [i.strip() for i in open(file)]
         gcode = gcoder.LightGCode(gcode)
         self.printing = True
@@ -74,3 +76,11 @@ class ElectroCommunication:
 
     def is_online(self):
         return self.connection.isOnline()
+
+    def get_tube_count(self):
+        return self.connection.count
+
+    def get_running(self):
+        self.printing = self.connection.printing
+        return self.printing
+
