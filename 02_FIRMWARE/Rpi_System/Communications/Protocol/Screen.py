@@ -14,27 +14,29 @@ def s_protocol(received):
     command = received.split(':')[1]
     int_olcut = command.split('-')[0]
 
-    # float_miktar = value + decimal value
-    float_olcut = float(str(int_olcut)[0:-1]) + float(int(int_olcut[-1]) / 10)
+    if str(int_olcut)[0:-1]:
+        # float_miktar = value + decimal value
+        float_olcut = float(str(int_olcut)[0:-1]) + float(int(int_olcut[-1]) / 10)
+    else:
+        float_olcut = float(int(int_olcut[-1]) / 10)
 
     int_miktar = int(command.split('-')[1])
     print('DEBUG: olcut:{} - miktar:{}'.format(float_olcut, int_miktar))
 
     one_shoot_g_codes = get_file_lines('one_shoot_g_codes.txt')
 
-    for index in range(0, int_miktar):
-        generated_g_codes.append(';COUNT:{}'.format(index+1))
-        for line in one_shoot_g_codes:
-            line = line.strip()
-            line = special_cases(line, float_olcut)
-            generated_g_codes.append(line)
+    #     generated_g_codes.append(';COUNT:{}'.format(index+1))
+    for line in one_shoot_g_codes:
+        line = line.strip()
+        line = special_cases(line, float_olcut)
+        generated_g_codes.append(line)
 
     f = open('temp_send_g_code_file.txt', "w")
     for line in generated_g_codes:
         f.write(line + '\n')
     f.close()
 
-    return generated_g_codes
+    return int_miktar
 
 
 def special_cases(line, olcut):

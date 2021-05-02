@@ -25,6 +25,7 @@ total_tube_count = 0
 
 # Variables
 send_file = 'temp_send_g_code_file.txt'
+print('asd')
 
 
 def startup_update():
@@ -50,12 +51,12 @@ def create_connections():
             break
     if motherboard.is_connect():
         print('MotherBoard Port: {}'.format(motherboard.get_port()))
+    screen = ScreenCommunication(screenPort)
     if screen.is_connect():
         print('Screen Connected.')
     else:
         motherboard = None
         print('ERROR: MotherBoard not connected.')
-    screen = ScreenCommunication(screenPort)
 
 
 if __name__ == "__main__":
@@ -69,48 +70,60 @@ if __name__ == "__main__":
 
     while True:
         try:
-            if len(screen.last_received) and not running:
-                received = screen.last_received
+            if len(screen.last_received):
+                received = screen.last_received.lower()
+                print('main recv: {}'.format(received))
                 if 'acil-stop' in received:
                     # Emergency Stop
                     # motherboard.sendNow('M112')
                     motherboard.stop()
+                    screen.last_received = ""
+                    received = ''
+                    time.sleep(1)
                     screen.send('page p_main')
-                elif 'start':
+                elif 'start' in received:
                     # Received Screen Command Convert to MB Command Array
-                    commands = s_protocol(received)
-
+                    miktar = s_protocol(received)
+                    time.sleep(0.5)
                     # # Send Command to Motherboard
-                    motherboard.start_printing(send_file)
                     screen.send('page p_running')
-                    running = True
+                    for i in range(miktar):
+                        motherboard.start_printing(send_file)
+                        total_tube_count += 1
+                        screen.send('p_main.lbl_yapilanTup.val=' + str(total_tube_count))
+                        screen.send('p_running.lbl_yapilanTup.val=' + str(total_tube_count))
+                    time.sleep(0.5)
+                    screen.send('page p_main')
+                    # running = True
                 elif 'ileri' in received:
                     # ileri:10
-                    dist = float(received.split(':')[1])
-                    motherboard.send_now('G91')
-                    motherboard.send_now('G0 X' + str(dist) + feedrate)
-                    motherboard.send_now('G90')
-                elif 'sag' in received:
-                    # sag:1
-                    dist = float(received.split(':')[1])
+                    dist = float(received.split('-')[1])
                     motherboard.send_now('G91')
                     motherboard.send_now('G0 Y' + str(dist) + feedrate)
                     motherboard.send_now('G90')
+                elif 'sag' in received:
+                    # sag:1
+                    dist = float(received.split('-')[1])
+                    motherboard.send_now('G91')
+                    motherboard.send_now('G0 X' + str(dist) + feedrate)
+                    motherboard.send_now('G90')
                 elif 'sol' in received:
                     # sol:0.1
-                    dist = float(received.split(':')[1])
-                    motherboard.send_now('G91')
-                    motherboard.send_now('G0 Y-' + str(dist) + feedrate)
-                    motherboard.send_now('G90')
-                elif 'geri' in received:
-                    # geri:10
-                    dist = float(received.split(':')[1])
+                    dist = float(received.split('-')[1])
                     motherboard.send_now('G91')
                     motherboard.send_now('G0 X-' + str(dist) + feedrate)
                     motherboard.send_now('G90')
+                elif 'geri' in received:
+                    # geri:10
+                    dist = float(received.split('-')[1])
+                    motherboard.send_now('G91')
+                    motherboard.send_now('G0 Y-' + str(dist) + feedrate)
+                    motherboard.send_now('G90')
                 elif 'home' in received:
                     # home
+                    print('SEND: G28')
                     motherboard.send_now('G28')
+                    motherboard.send_now('G0 X200 Y0' + feedrate)
                 elif 'tupu' in received:
                     if 'tut' in received:
                         # tupu-tut
@@ -123,26 +136,25 @@ if __name__ == "__main__":
                         # pompa-doldur
                         motherboard.send_now('T0')
                         motherboard.send_now('G91')
-                        motherboard.send_now('G1 E135' + feedrate)
+                        motherboard.send_now('G1 E540 F6000')
                         motherboard.send_now('G90')
                     elif 'bosalt' in received:
                         # pompa-bosalt
                         motherboard.send_now('T0')
                         motherboard.send_now('G91')
-                        motherboard.send_now('G1 E-135' + feedrate)
+                        motherboard.send_now('G1 E-540 F6000')
                         motherboard.send_now('G90')
 
                 screen.last_received = ""
-            elif running:
-                tube_count = motherboard.get_tube_count()
-                total_tube_count += tube_count
-                screen.send('p_main.lbl_yapilanTup.txt="'+str(total_tube_count)+'"')
-                screen.send('p_running.lbl_yapilanTup.txt="'+str(total_tube_count)+'"')
+                received = ''
+        #             elif running:
+        #                 screen.send('p_main.lbl_yapilanTup.val='+str())
+        #                 screen.send('p_running.lbl_yapilanTup.val='+str(motherboard.get_tube_count()))
 
         except:
-            pass
+            raise
 
-        if running and not motherboard.get_running() and running != motherboard.get_running():
-            screen.send('page p_running')
-            running = False
+        #         if running and not motherboard.get_running() and running != motherboard.get_running():
+        #             screen.send('page p_running')
+        #             running = False
         time.sleep(0.1)

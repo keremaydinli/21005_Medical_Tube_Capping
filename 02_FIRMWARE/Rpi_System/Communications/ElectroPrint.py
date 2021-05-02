@@ -41,6 +41,8 @@ class ElectroCommunication:
         gcode = gcoder.LightGCode(gcode)
         self.printing = True
         self.connection.startprint(gcode)
+        while self.connection.printing:
+            time.sleep(0.1)
 
     def send_now(self, cmd):
         self.connection.send_now(cmd)
@@ -80,7 +82,7 @@ class ElectroCommunication:
         return self.connection.isOnline()
 
     def get_tube_count(self):
-        return self.connection.count
+        return int(self.connection.count)
 
     def get_running(self):
         self.printing = self.connection.printing
