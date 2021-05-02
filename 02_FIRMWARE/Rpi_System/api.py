@@ -4,7 +4,7 @@ import logging
 from Updater.Update_System import GithubDownloader
 from Updater.Util import check_internet_connection
 from Communications.ElectroPrint import ElectroCommunication
-from Communications.Screen import ScreenCommunication
+from Communications.Nextion import ScreenCommunication
 from Communications.Utils import serial_ports
 from Communications.Protocol.Screen import s_protocol
 
@@ -19,6 +19,7 @@ screenPort = '/dev/ttyAMA0'
 motherboard = None
 screen = None
 
+feedrate = ' F8000'
 running = False
 total_tube_count = 0
 
@@ -69,24 +70,70 @@ if __name__ == "__main__":
     while True:
         try:
             if len(screen.last_received) and not running:
-                if 'acil-stop' in screen.last_received:
+                received = screen.last_received
+                if 'acil-stop' in received:
                     # Emergency Stop
                     # motherboard.sendNow('M112')
                     motherboard.stop()
                     screen.send('page p_main')
-                else:
+                elif 'start':
                     # Received Screen Command Convert to MB Command Array
-                    commands = s_protocol(screen.last_received)
+                    commands = s_protocol(received)
 
                     # # Send Command to Motherboard
                     motherboard.start_printing(send_file)
                     screen.send('page p_running')
                     running = True
+                elif 'ileri' in received:
+                    # ileri:10
+                    dist = float(received.split(':')[1])
+                    motherboard.send_now('G91')
+                    motherboard.send_now('G0 X' + str(dist) + feedrate)
+                    motherboard.send_now('G90')
+                elif 'sag' in received:
+                    # sag:1
+                    dist = float(received.split(':')[1])
+                    motherboard.send_now('G91')
+                    motherboard.send_now('G0 Y' + str(dist) + feedrate)
+                    motherboard.send_now('G90')
+                elif 'sol' in received:
+                    # sol:0.1
+                    dist = float(received.split(':')[1])
+                    motherboard.send_now('G91')
+                    motherboard.send_now('G0 Y-' + str(dist) + feedrate)
+                    motherboard.send_now('G90')
+                elif 'geri' in received:
+                    # geri:10
+                    dist = float(received.split(':')[1])
+                    motherboard.send_now('G91')
+                    motherboard.send_now('G0 X-' + str(dist) + feedrate)
+                    motherboard.send_now('G90')
+                elif 'home' in received:
+                    # home
+                    motherboard.send_now('G28')
+                elif 'tupu' in received:
+                    if 'tut' in received:
+                        # tupu-tut
+                        motherboard.send_now('M280 P2 S90')
+                    elif 'birak' in received:
+                        # tupu-birak
+                        motherboard.send_now('M280 P2 S120')
+                elif 'pompa' in received:
+                    if 'doldur' in received:
+                        # pompa-doldur
+                        motherboard.send_now('T0')
+                        motherboard.send_now('G91')
+                        motherboard.send_now('G1 E135' + feedrate)
+                        motherboard.send_now('G90')
+                    elif 'bosalt' in received:
+                        # pompa-bosalt
+                        motherboard.send_now('T0')
+                        motherboard.send_now('G91')
+                        motherboard.send_now('G1 E-135' + feedrate)
+                        motherboard.send_now('G90')
 
                 screen.last_received = ""
             elif running:
-                motherboard = ElectroCommunication('', 250000)
-                screen = ScreenCommunication(screenPort)
                 tube_count = motherboard.get_tube_count()
                 total_tube_count += tube_count
                 screen.send('p_main.lbl_yapilanTup.txt="'+str(total_tube_count)+'"')
@@ -95,7 +142,7 @@ if __name__ == "__main__":
         except:
             pass
 
-        if running and not motherboard.get_running():
+        if running and not motherboard.get_running() and running != motherboard.get_running():
             screen.send('page p_running')
             running = False
         time.sleep(0.1)

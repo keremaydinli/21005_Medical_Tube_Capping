@@ -7,75 +7,32 @@ def s_protocol(received):
     # TODO: bazi caseler tamamlanmadı gcodelar kontrol edilecek
 
     generated_g_codes = []
-    feedrate = ' F8000'
 
     received = str(received).lower()
 
-    if 'start' in received:
-        # start:21-13
-        command = received.split(':')[1]
-        int_olcut = command.split('-')[0]
+    # start:21-13
+    command = received.split(':')[1]
+    int_olcut = command.split('-')[0]
 
-        # float_miktar = value + decimal value
-        float_olcut = float(str(int_olcut)[0:-1]) + float(int(int_olcut[-1]) / 10)
+    # float_miktar = value + decimal value
+    float_olcut = float(str(int_olcut)[0:-1]) + float(int(int_olcut[-1]) / 10)
 
-        int_miktar = int(command.split('-')[1])
-        print('DEBUG: olcut:{} - miktar:{}'.format(float_olcut, int_miktar))
+    int_miktar = int(command.split('-')[1])
+    print('DEBUG: olcut:{} - miktar:{}'.format(float_olcut, int_miktar))
 
-        one_shoot_g_codes = get_file_lines('one_shoot_g_codes.txt')
+    one_shoot_g_codes = get_file_lines('one_shoot_g_codes.txt')
 
-        for index in range(0, int_miktar):
-            generated_g_codes.append(';COUNT:{}'.format(index+1))
-            for line in one_shoot_g_codes:
-                line = line.strip()
-                line = special_cases(line, float_olcut)
-                generated_g_codes.append(line)
+    for index in range(0, int_miktar):
+        generated_g_codes.append(';COUNT:{}'.format(index+1))
+        for line in one_shoot_g_codes:
+            line = line.strip()
+            line = special_cases(line, float_olcut)
+            generated_g_codes.append(line)
 
-        f = open('temp_send_g_code_file.txt', "w")
-        for line in generated_g_codes:
-            f.write(line + '\n')
-        f.close()
-
-    elif 'ileri' in received:
-        # ileri:10
-        dist = float(received.split(':')[1])
-        generated_g_codes.append('G91')
-        generated_g_codes.append('G0 X' + str(dist) + feedrate)
-        generated_g_codes.append('G90')
-    elif 'sag' in received:
-        # sag:1
-        dist = float(received.split(':')[1])
-        generated_g_codes.append('G91')
-        generated_g_codes.append('G0 Y' + str(dist) + feedrate)
-        generated_g_codes.append('G90')
-    elif 'sol' in received:
-        # sol:0.1
-        dist = float(received.split(':')[1])
-        generated_g_codes.append('G91')
-        generated_g_codes.append('G0 Y-' + str(dist) + feedrate)
-        generated_g_codes.append('G90')
-    elif 'geri' in received:
-        # geri:10
-        dist = float(received.split(':')[1])
-        generated_g_codes.append('G91')
-        generated_g_codes.append('G0 X-' + str(dist) + feedrate)
-        generated_g_codes.append('G90')
-    elif 'home' in received:
-        # home
-        generated_g_codes.append('G28')
-    elif 'kapagi' in received:
-        if 'bosalt' in received:
-            # kapagi-bosalt
-            generated_g_codes.append('M280 P2 S')
-            generated_g_codes.append('G4 P1000')
-            generated_g_codes.append('M280 P2 S')
-    elif 'tupu' in received:
-        if 'tut' in received:
-            # kapagi-tut
-            generated_g_codes.append('M280 P2 S')
-        elif 'birak' in received:
-            # kapagi-birak
-            generated_g_codes.append('M280 P2 S')
+    f = open('temp_send_g_code_file.txt', "w")
+    for line in generated_g_codes:
+        f.write(line + '\n')
+    f.close()
 
     return generated_g_codes
 

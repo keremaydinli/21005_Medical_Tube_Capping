@@ -1,3 +1,4 @@
+import time
 from .Modules.Printrun.Core import gcoder
 from .Modules.Printrun.Core.printcore import printcore
 
@@ -43,6 +44,7 @@ class ElectroCommunication:
 
     def send_now(self, cmd):
         self.connection.send_now(cmd)
+        time.sleep(0.5)
 
     def send(self, cmd):
         self.connection.send(cmd)
