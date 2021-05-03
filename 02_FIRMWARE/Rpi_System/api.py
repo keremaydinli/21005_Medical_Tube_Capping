@@ -20,8 +20,9 @@ motherboard = None
 screen = None
 
 feedrate = ' F8000'
-running = False
 total_tube_count = 0
+emergency_stop = False
+wait_and_stop = False
 
 # Variables
 send_file = 'temp_send_g_code_file.txt'
@@ -60,41 +61,52 @@ def create_connections():
 
 
 if __name__ == "__main__":
-    # arr = s_protocol('start:21-13')
-    startup_update()
+    try:
+        startup_update()
+    except:
+        print('ERROR: Update System Failed.')
 
     create_connections()
     print('Ready to use.')
 
     # Must move G28 (HOMING)
-
+    screen = ScreenCommunication(screenPort)  # will remove
+    motherboard = ElectroCommunication('_port', 250000)  # will remove
     while True:
         try:
             if len(screen.last_received):
                 received = screen.last_received.lower()
                 print('main recv: {}'.format(received))
-                if 'acil-stop' in received:
-                    # Emergency Stop
-                    # motherboard.sendNow('M112')
-                    motherboard.stop()
-                    screen.last_received = ""
-                    received = ''
-                    time.sleep(1)
-                    screen.send('page p_main')
-                elif 'start' in received:
-                    # Received Screen Command Convert to MB Command Array
-                    miktar = s_protocol(received)
-                    time.sleep(0.5)
+                if 'start' in received:
+                    miktar = s_protocol(received)  # Received Screen Command Convert to MB Command Array
+                    time.sleep(0.5)  # wait
                     # # Send Command to Motherboard
-                    screen.send('page p_running')
+                    screen.send('page p_running')  # display process page
                     for i in range(miktar):
-                        motherboard.start_printing(send_file)
-                        total_tube_count += 1
-                        screen.send('p_main.lbl_yapilanTup.val=' + str(total_tube_count))
-                        screen.send('p_running.lbl_yapilanTup.val=' + str(total_tube_count))
-                    time.sleep(0.5)
-                    screen.send('page p_main')
-                    # running = True
+                        motherboard.start_printing(send_file)  # start process
+                        while motherboard.connection.printing:  # wait until finish process
+                            if len(screen.last_received):  # listen screen
+                                received = screen.last_received.lower()  # received command from screen
+                                if 'emergency-stop' in received:  # finish process emergency
+                                    # Emergency Stop
+                                    emergency_stop = True
+                                    motherboard.stop()  # STOP process
+                                    screen.last_received = ""  # restore last received command from screen
+                                    received = ''  # restore last received command from screen
+                                    time.sleep(1)  # wait
+                                    # maybe add stopping screen
+                                    break
+                                elif 'wait-and-stop' in received:  # wait running process and after stop
+                                    wait_and_stop = True
+                            time.sleep(0.1)  # wait
+                        if emergency_stop:
+                            emergency_stop = False
+                            break
+                        total_tube_count += 1  # increment finish process count
+                        screen.send('p_main.lbl_yapilanTup.val=' + str(total_tube_count))  # update main page process counter
+                        screen.send('p_running.lbl_yapilanTup.val=' + str(total_tube_count))  # update process page process counter
+                    time.sleep(0.5)  # wait
+                    screen.send('page p_main')  # return main page
                 elif 'ileri' in received:
                     # ileri:10
                     dist = float(received.split('-')[1])
@@ -147,14 +159,7 @@ if __name__ == "__main__":
 
                 screen.last_received = ""
                 received = ''
-        #             elif running:
-        #                 screen.send('p_main.lbl_yapilanTup.val='+str())
-        #                 screen.send('p_running.lbl_yapilanTup.val='+str(motherboard.get_tube_count()))
 
         except:
             raise
-
-        #         if running and not motherboard.get_running() and running != motherboard.get_running():
-        #             screen.send('page p_running')
-        #             running = False
         time.sleep(0.1)

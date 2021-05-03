@@ -7,8 +7,7 @@ import logging
 from .Encryption import Encryptor
 
 from .Util import unzip, get_file_lines, write_file
-from .Terminal import Command
-from .ScreenUploader import screen_upload_tft_file
+# from .ScreenUploader import screen_upload_tft_file
 
 version_file_path = './version.txt'
 __VERSION__ = get_file_lines(version_file_path)[0].strip()
@@ -105,8 +104,8 @@ class GithubDownloader:
                     logging.info('Decrypting Finished.')
                     logging.debug('System Upgraded.')
 
-                # screen upgrade daha sonra eklenecek
-                # upgrade_screen('file_path')
+                    # screen upgrade daha sonra eklenecek
+                    # screen_upload_tft_file('file_path')
 
                 write_file(version_file_path, self.get_latest_version())
             except (FileNotFoundError, OSError):
