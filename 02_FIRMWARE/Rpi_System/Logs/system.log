@@ -1,5 +1,0 @@
-DEBUG : 2021-05-03 10:59:48,628 : Line No. : 227 - Starting new HTTP connection (1): www.google.com:80
-DEBUG : 2021-05-03 10:59:48,770 : Line No. : 452 - http://www.google.com:80 "GET / HTTP/1.1" 200 5949
-DEBUG : 2021-05-03 10:59:48,774 : Line No. : 971 - Starting new HTTPS connection (1): api.github.com:443
-DEBUG : 2021-05-03 10:59:49,169 : Line No. : 452 - https://api.github.com:443 "GET /repos/NLSS-Engineering/21005_Medical_Tube_Capping/releases/latest HTTP/1.1" 200 893
-INFO : 2021-05-03 10:59:49,171 : Line No. : 77 - System up to date. 0.0.1

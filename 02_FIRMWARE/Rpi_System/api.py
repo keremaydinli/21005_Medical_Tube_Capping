@@ -1,7 +1,11 @@
 import time
+import glob
 import logging
+import os
 
-from Updater.Update_System import GithubDownloader
+from Updater.Update_System import GithubDownloader, get_version_file_path
+from Updater.ScreenUploader import screen_upload_tft_file
+from Updater.Util import write_file
 from Updater.Util import check_internet_connection
 from Communications.ElectroPrint import ElectroCommunication
 from Communications.Nextion import ScreenCommunication
@@ -19,48 +23,47 @@ screenPort = '/dev/ttyAMA0'
 motherboard = None
 screen = None
 
+# Variables
+screen_upload_file = 'gui.tft'
+send_file = 'temp_send_g_code_file.txt'
 feedrate = ' F8000'
 total_tube_count = 0
 emergency_stop = False
 wait_and_stop = False
-
-# Variables
-send_file = 'temp_send_g_code_file.txt'
-print('asd')
+extract_files_path = "./Files/EXTRACT/"
 
 
 def startup_update():
     if check_internet_connection():
-        gd = GithubDownloader(url, encrypted=True, path='./', unzip_path="./Files/EXTRACT/")
-        # RELEASE: unzip path ve path girilmeyecek
-        # gd.download()  # if AutoDownload is True, it's not necessary
-        # if gd.is_new_version():
-        # change screen to update screen
-        # pass
-        gd.upgrade_system()
+        gd = GithubDownloader(url, encrypted=True, path='./Files', unzip_path=extract_files_path)
+        if gd.is_new_version():  # if new version
+            gd.upgrade_system()  # system upgrade
+            if glob.glob(extract_files_path + screen_upload_file,
+                         recursive=True):  # if screen_upload_file in downloaded files
+                screen_upload_file_path = os.path.abspath(screen_upload_file)  # get abspath
+                screen.send('page p_update')
+                screen_upload_tft_file(screen_upload_file_path)  # upload screen
+            write_file(get_version_file_path(), gd.get_latest_version())
+            screen.send('page p_restart')
+            time.sleep(3)  # wait
+            os.system('sudo shutdown -r now')
 
 
 def create_connections():
     global motherboard, screen
     _ports = serial_ports()
-    print('ports: {}'.format(_ports))
     for _port in _ports:
-        # motherboard = MotherBoardCommunication(_port, 250000)
         motherboard = ElectroCommunication(_port, 250000)
         time.sleep(3)
         if motherboard.is_connect():
             break
-    if motherboard.is_connect():
-        print('MotherBoard Port: {}'.format(motherboard.get_port()))
-    screen = ScreenCommunication(screenPort)
-    if screen.is_connect():
-        print('Screen Connected.')
-    else:
-        motherboard = None
-        print('ERROR: MotherBoard not connected.')
+    time.sleep(2)  # wait
+    screen.send('page p_main')  # set screen page to main page
 
 
 if __name__ == "__main__":
+    screen = ScreenCommunication(screenPort)  # Its needed for system upgrade page
+
     try:
         startup_update()
     except:
@@ -70,7 +73,6 @@ if __name__ == "__main__":
     print('Ready to use.')
 
     # Must move G28 (HOMING)
-    screen = ScreenCommunication(screenPort)  # will remove
     motherboard = ElectroCommunication('_port', 250000)  # will remove
     while True:
         try:
@@ -103,8 +105,10 @@ if __name__ == "__main__":
                             emergency_stop = False
                             break
                         total_tube_count += 1  # increment finish process count
-                        screen.send('p_main.lbl_yapilanTup.val=' + str(total_tube_count))  # update main page process counter
-                        screen.send('p_running.lbl_yapilanTup.val=' + str(total_tube_count))  # update process page process counter
+                        screen.send(
+                            'p_main.lbl_yapilanTup.val=' + str(total_tube_count))  # update main page process counter
+                        screen.send('p_running.lbl_yapilanTup.val=' + str(
+                            total_tube_count))  # update process page process counter
                     time.sleep(0.5)  # wait
                     screen.send('page p_main')  # return main page
                 elif 'ileri' in received:

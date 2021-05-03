@@ -10,17 +10,11 @@ def s_protocol(received):
 
     received = str(received).lower()
 
-    # start:21-13
+    # start:2.0-10
     command = received.split(':')[1]
-    int_olcut = command.split('-')[0]
+    float_olcut = float(command.split('-')[0])  # 2.0
+    int_miktar = int(command.split('-')[1])  # 10
 
-    if str(int_olcut)[0:-1]:
-        # float_miktar = value + decimal value
-        float_olcut = float(str(int_olcut)[0:-1]) + float(int(int_olcut[-1]) / 10)
-    else:
-        float_olcut = float(int(int_olcut[-1]) / 10)
-
-    int_miktar = int(command.split('-')[1])
     print('DEBUG: olcut:{} - miktar:{}'.format(float_olcut, int_miktar))
 
     one_shoot_g_codes = get_file_lines('one_shoot_g_codes.txt')

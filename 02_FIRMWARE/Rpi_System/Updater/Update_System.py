@@ -6,11 +6,14 @@ import logging
 
 from .Encryption import Encryptor
 
-from .Util import unzip, get_file_lines, write_file
-# from .ScreenUploader import screen_upload_tft_file
+from .Util import unzip, get_file_lines
 
 version_file_path = './version.txt'
 __VERSION__ = get_file_lines(version_file_path)[0].strip()
+
+
+def get_version_file_path():
+    return version_file_path
 
 
 class GithubDownloader:
@@ -91,23 +94,20 @@ class GithubDownloader:
         logging.info('Download Finished in {:.2f} seconds.'.format(time.time() - start_download_time))
 
     def upgrade_system(self):
-        if self.is_new_version():
-            self.download()
 
-            try:
-                if self.encryptor:
-                    logging.info('Decrypting...')
-                    self.decrypt_file(self.encryptedPath + self.get_zip_file_name(),
-                                      self.decryptedPath + self.get_zip_file_name())
-                    os.remove(self.encryptedPath + self.get_zip_file_name())
-                    unzip(self.decryptedPath + self.get_zip_file_name(), self.unzipPath)
-                    logging.info('Decrypting Finished.')
-                    logging.debug('System Upgraded.')
+        self.download()
 
-                    # screen upgrade daha sonra eklenecek
-                    # screen_upload_tft_file('file_path')
+        try:
+            if self.encryptor:
+                logging.info('Decrypting...')
+                self.decrypt_file(self.encryptedPath + self.get_zip_file_name(),
+                                  self.decryptedPath + self.get_zip_file_name())
+                os.remove(self.encryptedPath + self.get_zip_file_name())
+                unzip(self.decryptedPath + self.get_zip_file_name(), self.unzipPath)
+                logging.info('Decrypting Finished.')
+                logging.debug('System Upgraded.')
 
-                write_file(version_file_path, self.get_latest_version())
-            except (FileNotFoundError, OSError):
-                logging.error('Firstly, you need to download the file!')
-                pass
+
+        except (FileNotFoundError, OSError):
+            logging.error('Firstly, you need to download the file!')
+            pass

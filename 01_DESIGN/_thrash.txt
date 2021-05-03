@@ -1,0 +1,13 @@
+--- label olarak kullanılan olcut ve miktarların baslat butonundaki kodu
+cov lbl_olcut.val,value.txt,0
+send_value.txt="start:"
+send_value.txt+=decim.txt
+send_value.txt+=value.txt
+cov lbl_miktar.val,value.txt,0
+send_value.txt+="-"
+send_value.txt+=value.txt
+prints send_value.txt,0
+---
+lbl_olcut (xfloat) -> val=0 , vss0=0, vss1=1
+lbl_miktar (number) -> length=0, val=0, format=decimal
+---

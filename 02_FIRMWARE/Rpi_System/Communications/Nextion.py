@@ -19,7 +19,6 @@ class ScreenCommunication:
             self.connection = serial.Serial(self.port, self.baudrate, timeout=0.25)
             self.send('connect')
             time.sleep(1)
-            self.send('page p_main')  # 'page page0'  -> main page
 
     def send(self, command):
         self.connection.write(command.encode())
