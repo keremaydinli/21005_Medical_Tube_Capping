@@ -193,9 +193,6 @@ class printcore():
                 self.printing = False
                 self.print_thread.join()
             self._stop_sender()
-            if threading.current_thread() != self.tempListenThread:
-                self.tempListenThread.join()
-            self.tempListenThread = None
             try:
                 self.printer.close()
             except socket.error:

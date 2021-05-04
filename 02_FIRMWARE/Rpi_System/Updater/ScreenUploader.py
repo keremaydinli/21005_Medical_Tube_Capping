@@ -11,62 +11,69 @@ PORT = '/dev/ttyAMA0'
 BAUDCOMM = 9600
 BAUDUPLOAD = 115200
 
-def screen_upload_tft_file(file_path):
-    if os.path.isfile(file_path):
-        print('uploading %s (%i bytes)...' % (file_path, os.path.getsize(file_path)))
-    else:
-        print('file not found')
-        exit(-1)
+#if len(sys.argv) != 2:
+#    print 'usage: python %s file_to_upload.tft' % sys.argv[0]
+#    exit(-2)
 
-    fsize = os.path.getsize(file_path)
+file_path = ""
 
-    ser = serial.Serial(PORT, BAUDCOMM, timeout=.1, )
+if os.path.isfile(file_path):
+    print ('uploading %s (%i bytes)...' % (file_path, os.path.getsize(file_path)))
+else:
+    print ('file not found')
+    exit(-1)
 
-    waiting = False
+fsize = os.path.getsize(file_path)
 
-    def reader():
-        global waiting
-        while True:
-            r = ser.read(128)
-            if r == '': continue
-            if waiting and '\x05' in r:
-                waiting = False
-                continue
-            print('<%r>' % r)
 
-    threader = threading.Thread(target=reader)
-    threader.daemon = True
-    threader.start()
+ser = serial.Serial(PORT, BAUDCOMM, timeout=.1, )
 
-    ser.write(b'\xff\xff\xff')
-    ser.write('connect'.encode())
-    ser.write(b'\xff\xff\xff')
-    time.sleep(.5)
+waiting = False
 
-    ser.write('whmi-wri %i,%i,res0'.encode() % (fsize, BAUDUPLOAD))
-    ser.write(b'\xff\xff\xff')
-    time.sleep(.1)
+def reader():
+    global waiting
+    while True:
+        r = ser.read(128)
+        if r == '': continue
+        if waiting and '\x05' in r:
+            waiting = False
+            continue
+        print ('<%r>' % r)
 
-    waiting = True
-    ser.baudrate = BAUDUPLOAD
-    print('waiting hmi')
-    while waiting:
-        pass
+threader = threading.Thread(target = reader)
+threader.daemon = True
+threader.start()
 
-    with open(file_path, 'rb') as hmif:
-        dcount = 0
-        while True:
-            time.sleep(.1)
-            data = hmif.read(4096)
-            if len(data) == 0: break
-            dcount += len(data)
-            print('writing %i...' % len(data))
-            ser.write(data)
-            sys.stdout.write('\rDownloading, %3.3f...        ' % (dcount / 868631.0 * 100.0))
-            sys.stdout.flush()
-            waiting = True
-            print('waiting for hmi...')
-            while waiting:
-                pass
+ser.write(b'\xff\xff\xff')
+ser.write('connect'.encode())
+ser.write(b'\xff\xff\xff')
+time.sleep(.5)
 
-    ser.close()
+ser.write('whmi-wri %i,%i,res0'.encode() % (fsize, BAUDUPLOAD))
+ser.write(b'\xff\xff\xff')
+time.sleep(.1)
+
+waiting = True
+ser.baudrate = BAUDUPLOAD
+print ('waiting hmi')
+while waiting:
+    pass
+
+with open(file_path, 'rb') as hmif:
+    dcount = 0
+    while True:
+        time.sleep(.1)
+        data = hmif.read(4096)
+        if len(data) == 0: break
+        dcount += len(data)
+        print ('writing %i...' % len(data))
+        ser.write(data)
+        sys.stdout.write('\rDownloading, %3.3f...        ' % (dcount/868631.0*100.0))
+        sys.stdout.flush()
+        waiting = True
+        print ('waiting for hmi...')
+        while waiting:
+            pass
+
+
+ser.close()

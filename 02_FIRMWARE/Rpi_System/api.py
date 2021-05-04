@@ -3,8 +3,8 @@ import glob
 import logging
 import os
 
-from Updater.Update_System import GithubDownloader, get_version_file_path
-from Updater.ScreenUploader import screen_upload_tft_file
+# from Updater.Update_System import GithubDownloader, get_version_file_path
+# from Updater.ScreenUploader import screen_upload_tft_file
 from Updater.Util import write_file
 from Updater.Util import check_internet_connection
 from Communications.ElectroPrint import ElectroCommunication
@@ -25,7 +25,8 @@ screen = None
 
 # Variables
 screen_upload_file = 'gui.tft'
-send_file = 'temp_send_g_code_file.txt'
+# send_file = 'temp_send_g_code_file.txt'
+send_file = 'test_gcode.txt'
 feedrate = ' F8000'
 total_tube_count = 0
 emergency_stop = False
@@ -35,6 +36,7 @@ extract_files_path = "./Files/EXTRACT/"
 
 def startup_update():
     if check_internet_connection():
+        print('6')
         gd = GithubDownloader(url, encrypted=True, path='./Files', unzip_path=extract_files_path)
         if gd.is_new_version():  # if new version
             gd.upgrade_system()  # system upgrade
@@ -49,31 +51,31 @@ def startup_update():
             os.system('sudo shutdown -r now')
 
 
-def create_connections():
+def create_connections(delay=2):
     global motherboard, screen
     _ports = serial_ports()
     for _port in _ports:
         motherboard = ElectroCommunication(_port, 250000)
-        time.sleep(3)
+        time.sleep(0.1)
         if motherboard.is_connect():
             break
-    time.sleep(2)  # wait
-    screen.send('page p_main')  # set screen page to main page
+    time.sleep(delay)
 
 
 if __name__ == "__main__":
     screen = ScreenCommunication(screenPort)  # Its needed for system upgrade page
 
-    try:
-        startup_update()
-    except:
-        print('ERROR: Update System Failed.')
+    #     try:
+    #         startup_update()
+    #     except:
+    #         print('ERROR: Update System Failed.')
 
     create_connections()
+    screen.send('page p_main')  # set screen page to main page
     print('Ready to use.')
 
     # Must move G28 (HOMING)
-    motherboard = ElectroCommunication('_port', 250000)  # will remove
+
     while True:
         try:
             if len(screen.last_received):
@@ -84,18 +86,26 @@ if __name__ == "__main__":
                     time.sleep(0.5)  # wait
                     # # Send Command to Motherboard
                     screen.send('page p_running')  # display process page
+
                     for i in range(miktar):
+
                         motherboard.start_printing(send_file)  # start process
+
                         while motherboard.connection.printing:  # wait until finish process
+
                             if len(screen.last_received):  # listen screen
                                 received = screen.last_received.lower()  # received command from screen
                                 if 'emergency-stop' in received:  # finish process emergency
                                     # Emergency Stop
                                     emergency_stop = True
                                     motherboard.stop()  # STOP process
+                                    motherboard._disconnect()  # restart connection
+                                    create_connections(1)  # restart connection and wait 1 sec
+                                    motherboard.send_now("G28")  # go home
+                                    motherboard.send_now("G1 X200 Y0 F8000")  # go park position
                                     screen.last_received = ""  # restore last received command from screen
                                     received = ''  # restore last received command from screen
-                                    time.sleep(1)  # wait
+                                    time.sleep(2)  # wait
                                     # maybe add stopping screen
                                     break
                                 elif 'wait-and-stop' in received:  # wait running process and after stop
@@ -104,13 +114,20 @@ if __name__ == "__main__":
                         if emergency_stop:
                             emergency_stop = False
                             break
+
                         total_tube_count += 1  # increment finish process count
+                        print('DEBUG: total_tube_count:{}'.format(total_tube_count))
                         screen.send(
                             'p_main.lbl_yapilanTup.val=' + str(total_tube_count))  # update main page process counter
                         screen.send('p_running.lbl_yapilanTup.val=' + str(
                             total_tube_count))  # update process page process counter
+                        if wait_and_stop:
+                            wait_and_stop = False
+                            motherboard.connection.cancelprint()
+                            break
                     time.sleep(0.5)  # wait
                     screen.send('page p_main')  # return main page
+                    motherboard.send_now("G1 X200 Y0 F8000")  # go park position
                 elif 'ileri' in received:
                     # ileri:10
                     dist = float(received.split('-')[1])
@@ -134,6 +151,16 @@ if __name__ == "__main__":
                     dist = float(received.split('-')[1])
                     motherboard.send_now('G91')
                     motherboard.send_now('G0 Y-' + str(dist) + feedrate)
+                    motherboard.send_now('G90')
+                elif 'up' in received:
+                    dist = float(received.split('-')[1])
+                    motherboard.send_now('G91')
+                    motherboard.send_now('G0 Z' + str(dist) + feedrate)
+                    motherboard.send_now('G90')
+                elif 'down' in received:
+                    dist = float(received.split('-')[1])
+                    motherboard.send_now('G91')
+                    motherboard.send_now('G0 Z-' + str(dist) + feedrate)
                     motherboard.send_now('G90')
                 elif 'home' in received:
                     # home

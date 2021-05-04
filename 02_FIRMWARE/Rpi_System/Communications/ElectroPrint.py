@@ -44,7 +44,7 @@ class ElectroCommunication:
 
     def send_now(self, cmd):
         self.connection.send_now(cmd)
-        time.sleep(0.5)
+        time.sleep(0.2)
 
     def send(self, cmd):
         self.connection.send(cmd)
@@ -61,17 +61,14 @@ class ElectroCommunication:
 
     def stop(self):
         self.printing = False
+        self.send_now("M112")
         self.connection.cancelprint()
-        self.send("M112")
-        self.send("G90")
-        self.send("G90")
-        self.send("G0 X200 Y0 F8000")
 
     def _disconnect(self):
         self.connection.disconnect()
 
     def reset(self):
-        self._disconnect()
+        self.disconnect()
         self.connect()
 
     def is_printing(self):
@@ -86,4 +83,3 @@ class ElectroCommunication:
     def get_running(self):
         self.printing = self.connection.printing
         return self.printing
-
