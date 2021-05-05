@@ -101,8 +101,8 @@ if __name__ == "__main__":
                                     motherboard.stop()  # STOP process
                                     motherboard._disconnect()  # restart connection
                                     create_connections(1)  # restart connection and wait 1 sec
-                                    motherboard.send_now("G28")  # go home
-                                    motherboard.send_now("G1 X200 Y0 F8000")  # go park position
+                                    motherboard.send_now("M84 X Y")  # go home
+                                    screen.send('page p_stopped')
                                     screen.last_received = ""  # restore last received command from screen
                                     received = ''  # restore last received command from screen
                                     time.sleep(2)  # wait
@@ -115,19 +115,23 @@ if __name__ == "__main__":
                             emergency_stop = False
                             break
 
+                        # total tube count update
                         total_tube_count += 1  # increment finish process count
                         print('DEBUG: total_tube_count:{}'.format(total_tube_count))
                         screen.send(
                             'p_main.lbl_yapilanTup.val=' + str(total_tube_count))  # update main page process counter
                         screen.send('p_running.lbl_yapilanTup.val=' + str(
                             total_tube_count))  # update process page process counter
+
                         if wait_and_stop:
                             wait_and_stop = False
-                            motherboard.connection.cancelprint()
+                            motherboard.connection.cancelprint()  # cancel process queue
+                            time.sleep(0.5)  # wait
+                            motherboard.send_now("G1 X200 Y0 F8000")  # go park position
+                            time.sleep(1)
+                            screen.send('page p_main')  # return main page
                             break
-                    time.sleep(0.5)  # wait
-                    screen.send('page p_main')  # return main page
-                    motherboard.send_now("G1 X200 Y0 F8000")  # go park position
+
                 elif 'ileri' in received:
                     # ileri:10
                     dist = float(received.split('-')[1])
@@ -187,6 +191,12 @@ if __name__ == "__main__":
                         motherboard.send_now('G91')
                         motherboard.send_now('G1 E-540 F6000')
                         motherboard.send_now('G90')
+                elif 'dispanser' in received:
+                    if 'ac' in received:
+                        motherboard.send_now('M280 P3 S120')
+                    elif 'kapat' in received:
+                        motherboard.send_now('M280 P3 S70')
+
 
                 screen.last_received = ""
                 received = ''
