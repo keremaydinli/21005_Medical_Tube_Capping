@@ -46,12 +46,13 @@ def startup_update():
             if glob.glob(pwd + screen_upload_file,
                          recursive=True):  # if screen_upload_file in downloaded files
                 file_path = os.path.abspath(screen_upload_file)  # get abspath
+                screen.send('page p_restart')
+                time.sleep(2)
                 os.system('python ' + pwd + './Updater/ScreenUploader.py')
                 os.remove(pwd + './Updater/ScreenUploader.py')
             write_file(get_version_file_path(), gd.get_latest_version())
-            screen.send('page p_restart')
-            time.sleep(3)  # wait
-            screen.send('page p_main')
+            # time.sleep(3)  # wait
+            # screen.send('page p_main')
             os.system('sudo shutdown -r now')
 
 
