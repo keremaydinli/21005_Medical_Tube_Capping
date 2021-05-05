@@ -3,8 +3,8 @@ import glob
 import logging
 import os
 
-# from Updater.Update_System import GithubDownloader, get_version_file_path
-# from Updater.ScreenUploader import screen_upload_tft_file
+from Updater.Update_System import GithubDownloader, get_version_file_path
+from Updater.ScreenUploader import file_path
 from Updater.Util import write_file
 from Updater.Util import check_internet_connection
 from Communications.ElectroPrint import ElectroCommunication
@@ -16,6 +16,7 @@ logging.basicConfig(filename="./Logs/system.log", filemode='w', level=logging.DE
                     format='%(levelname)s : %(asctime)s : Line No. : %(lineno)d - %(message)s', )
 
 # Parameters #
+# TODO: PUBLIC REPO UZERINDEN YAPILACAK
 url = "https://api.github.com/repos/NLSS-Engineering/21005_Medical_Tube_Capping/releases/latest"
 screenPort = '/dev/ttyAMA0'
 
@@ -24,8 +25,9 @@ motherboard = None
 screen = None
 
 # Variables
-screen_upload_file = 'gui.tft'
+screen_upload_file = '/gui.tft'
 # send_file = 'temp_send_g_code_file.txt'
+# TODO: SEND_FILE ISMI DEGISTIRILECEK
 send_file = 'test_gcode.txt'
 feedrate = ' F8000'
 total_tube_count = 0
@@ -36,18 +38,20 @@ extract_files_path = "./Files/EXTRACT/"
 
 def startup_update():
     if check_internet_connection():
-        print('6')
         gd = GithubDownloader(url, encrypted=True, path='./Files', unzip_path=extract_files_path)
         if gd.is_new_version():  # if new version
+            screen.send('page p_update')
             gd.upgrade_system()  # system upgrade
-            if glob.glob(extract_files_path + screen_upload_file,
+            pwd = os.getcwd()
+            if glob.glob(pwd + screen_upload_file,
                          recursive=True):  # if screen_upload_file in downloaded files
-                screen_upload_file_path = os.path.abspath(screen_upload_file)  # get abspath
-                screen.send('page p_update')
-                screen_upload_tft_file(screen_upload_file_path)  # upload screen
+                file_path = os.path.abspath(screen_upload_file)  # get abspath
+                os.system('python ' + pwd + './Updater/ScreenUploader.py')
+                os.remove(pwd + './Updater/ScreenUploader.py')
             write_file(get_version_file_path(), gd.get_latest_version())
             screen.send('page p_restart')
             time.sleep(3)  # wait
+            screen.send('page p_main')
             os.system('sudo shutdown -r now')
 
 
@@ -65,10 +69,10 @@ def create_connections(delay=2):
 if __name__ == "__main__":
     screen = ScreenCommunication(screenPort)  # Its needed for system upgrade page
 
-    #     try:
-    #         startup_update()
-    #     except:
-    #         print('ERROR: Update System Failed.')
+    try:
+        startup_update()
+    except:
+        print('ERROR: Update System Failed.')
 
     create_connections()
     screen.send('page p_main')  # set screen page to main page
@@ -106,7 +110,6 @@ if __name__ == "__main__":
                                     screen.last_received = ""  # restore last received command from screen
                                     received = ''  # restore last received command from screen
                                     time.sleep(2)  # wait
-                                    # maybe add stopping screen
                                     break
                                 elif 'wait-and-stop' in received:  # wait running process and after stop
                                     wait_and_stop = True
