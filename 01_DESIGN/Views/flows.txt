@@ -1,0 +1,30 @@
+1 - acılırken 1_splash_screen
+2 - eğer güncelleme mevcut ise 14_update_Screen
+	2.1 - sistem güncellendikten sonra sistem restart atacak 15_restart_screen
+3 - eger güncelleme yok ise 2_main_screen
+4 - 2_main_Screen deki butonlar ve göstergeler;
+	4.1 - robot butonu 3_robot_screen
+		4.1.1 - 3_robot_screen içerisindeki butonlar;
+			4.1.1.1 - hareket butonu 4_hareket_screen
+			4.1.1.2 - pompa butonu 5_pompa_screen
+			4.1.1.3 - fonksiyonlar butonu 6_fonksiyonlar_Screen
+	4.2 - ayar butonu 7_ayar_screen
+	4.3 - baslat butonu işlemi başlatır.
+		4.3.1 - eğer sistem açıldıktan sonra hiç home yapılmadıysa (bkz. 4_hareket_screen)
+			hata mesajını gösterir 8_home_error_Screen
+		4.3.2 - eğer miktar 0(sıfır) olarak bırakılıysa/girildiyse/unutulduysa sistem
+			hata mesajı gösterir 9_miktar_error_screen
+	4.4 - sağ üstte yapılan tüp sayısını gösterir
+	4.5 - mL: tüpe 2.0mL sıvı enjekte edilir (değiştirilemez)
+	4.6 - miktar: kaç tüp doldurulacağını gösterir (değiştirilebilir)
+5 - tüp doldurma işlemi başladıktan sonra 10_running_screen gösterilir
+	5.1 - 10_running_screen deki butonlar ve gösterge;
+		5.1.1 - "DUR" butonu o an yapılmakta olan işlemi bitene kadar devam ettirir "12_stopping_screen". Geri kalan işlemleri iptal eder.(ör:
+			16 adet tüp doldurma işlemi verildiğinde 10. tüp doldurulurken bu butona basıldığında 10. tüp doldurulur 
+			geri kalan 6 tüp doldurma işlemi iptal edilmiş olur.) SCARA ARM park pozisyonuna gider.
+		5.1.2 - "ACIL-DUR" butonu o an yapılan işlemin bitmesini beklemeden tüm işlemleri iptal eder ve motorların gücünü keser.
+			2 saniye sonra sistemi tekrar aktifleştirir. Bu işlem sonrasında ekranda 11_stopped_screen görünüyorsa kolun yanlış bir pozisyonda
+			kalmaması adına güvenli bir konuma almanız istenir. bu işlem sonrasında TAMAM butonuna tıklarsanız 13_stopped_home_screen e geçiş yapar.
+			bu durumda isterseniz HOME butonuna tıklayarak SACARA ARM ı kalibre ettirebilir ve park pozisyonuna gönderebilirsiniz. ya da geri butonuna 
+			tıklayarak daha sonra home yaptırtabilirisiniz.
+

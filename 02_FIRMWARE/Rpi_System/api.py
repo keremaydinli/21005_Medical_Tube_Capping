@@ -11,6 +11,7 @@ from Communications.ElectroPrint import ElectroCommunication
 from Communications.Nextion import ScreenCommunication
 from Communications.Utils import serial_ports
 from Communications.Protocol.Screen import s_protocol
+from ArmFunctions import Motor, Servo, Move
 
 logging.basicConfig(filename="./Logs/system.log", filemode='w', level=logging.DEBUG,
                     format='%(levelname)s : %(asctime)s : Line No. : %(lineno)d - %(message)s', )
@@ -139,67 +140,66 @@ if __name__ == "__main__":
                 elif 'ileri' in received:
                     # ileri:10
                     dist = float(received.split('-')[1])
-                    motherboard.send_now('G91')
-                    motherboard.send_now('G0 Y' + str(dist) + feedrate)
-                    motherboard.send_now('G90')
+                    Move.forward(motherboard, dist)
                 elif 'sag' in received:
                     # sag:1
                     dist = float(received.split('-')[1])
-                    motherboard.send_now('G91')
-                    motherboard.send_now('G0 X' + str(dist) + feedrate)
-                    motherboard.send_now('G90')
+                    Move.right(motherboard, dist)
                 elif 'sol' in received:
                     # sol:0.1
                     dist = float(received.split('-')[1])
-                    motherboard.send_now('G91')
-                    motherboard.send_now('G0 X-' + str(dist) + feedrate)
-                    motherboard.send_now('G90')
+                    Move.left(motherboard, dist)
                 elif 'geri' in received:
                     # geri:10
                     dist = float(received.split('-')[1])
-                    motherboard.send_now('G91')
-                    motherboard.send_now('G0 Y-' + str(dist) + feedrate)
-                    motherboard.send_now('G90')
+                    Move.backward(motherboard, dist)
                 elif 'up' in received:
                     dist = float(received.split('-')[1])
-                    motherboard.send_now('G91')
-                    motherboard.send_now('G0 Z' + str(dist) + feedrate)
-                    motherboard.send_now('G90')
+                    Move.up(motherboard, dist)
                 elif 'down' in received:
                     dist = float(received.split('-')[1])
-                    motherboard.send_now('G91')
-                    motherboard.send_now('G0 Z-' + str(dist) + feedrate)
-                    motherboard.send_now('G90')
+                    Move.down(motherboard, dist)
                 elif 'home' in received:
                     # home
-                    print('SEND: G28')
-                    motherboard.send_now('G28')
-                    motherboard.send_now('G0 X200 Y0' + feedrate)
+                    Move.home(motherboard, go_park_position=True)
                 elif 'tupu' in received:
                     if 'tut' in received:
                         # tupu-tut
-                        motherboard.send_now('M280 P2 S90')
+                        Servo.run(motherboard, 2, 90)
                     elif 'birak' in received:
                         # tupu-birak
-                        motherboard.send_now('M280 P2 S120')
+                        Servo.run(motherboard, 2, 120)
                 elif 'pompa' in received:
                     if 'doldur' in received:
                         # pompa-doldur
-                        motherboard.send_now('T0')
-                        motherboard.send_now('G91')
-                        motherboard.send_now('G1 E540 F6000')
-                        motherboard.send_now('G90')
+                        Motor.run(motherboard, 0, 540, 6000)
                     elif 'bosalt' in received:
                         # pompa-bosalt
-                        motherboard.send_now('T0')
-                        motherboard.send_now('G91')
-                        motherboard.send_now('G1 E-540 F6000')
-                        motherboard.send_now('G90')
-                elif 'dispanser' in received:
-                    if 'ac' in received:
-                        motherboard.send_now('M280 P3 S120')
-                    elif 'kapat' in received:
-                        motherboard.send_now('M280 P3 S70')
+                        Motor.run(motherboard, 0, -540, 6000)
+                elif 'disp' in received:
+                    # sol acik asagi -> P1
+                    # sag acik yukari -> P3
+                    if '1' in received:
+                        if 'ac' in received:
+                            # disp-1-ac
+                            Servo.run(motherboard, 1, 140)
+                        elif 'kapat' in received:
+                            # disp - 1 - kapat
+                            Servo.run(motherboard, 1, 90)
+                    elif '2' in received:
+                        if 'ac' in received:
+                            # disp-2-ac
+                            Servo.run(motherboard, 3, 130)
+                        elif 'kapat' in received:
+                            # disp-2-kapat
+                            Servo.run(motherboard, 3, 90)
+                elif 'kapak' in received:
+                    if 'duz' in received:
+                        # kapak - duz
+                        Motor.run(motherboard, 1, 300)
+                    elif 'ters' in received:
+                        # kapak-ters
+                        Motor.run(motherboard, 1, -300)
 
 
                 screen.last_received = ""
