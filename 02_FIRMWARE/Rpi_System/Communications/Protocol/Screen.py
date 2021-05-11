@@ -39,7 +39,7 @@ def special_cases(line, olcut):
     # elde ettigimiz sayi hep asagıdaki sayıya esit olmak zorunda
     # mesela 2 mL icin donduruyorsak asagıdaki sayı 2 olmalı, 0.5 mL icin donduruyorsak asagıdaki sayı 0.5 olmalı
     standard_olcut_quantity = 2.0
-    extrude_pump_quantity = 135.0
+    extrude_pump_quantity = 95.0
     if 'pump' in line.lower():
         raw_line = line.split(';')[0].strip()  # line: G1 E135 F8000
         raw_line_params = raw_line.split(' ')
