@@ -29,6 +29,7 @@ screen = None
 screen_upload_file = '/gui.tft'
 # send_file = 'temp_send_g_code_file.txt'
 # TODO: SEND_FILE ISMI DEGISTIRILECEK
+
 send_file = 'test_gcode.gcode'
 tup_ver_file = 'tup_ver.gcode'
 feedrate = ' F8000'
