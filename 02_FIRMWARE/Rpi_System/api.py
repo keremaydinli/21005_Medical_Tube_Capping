@@ -52,7 +52,7 @@ def startup_update():
                 screen.send('page p_restart')
                 time.sleep(2)
                 os.system('python ' + pwd + '/Updater/ScreenUploader.py')
-                os.remove(pwd + '/Updater/ScreenUploader.py')
+                os.remove(pwd + screen_upload_file)
             write_file(get_version_file_path(), gd.get_latest_version())
             # time.sleep(3)  # wait
             # screen.send('page p_main')
