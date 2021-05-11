@@ -30,6 +30,7 @@ screen_upload_file = '/gui.tft'
 # send_file = 'temp_send_g_code_file.txt'
 # TODO: SEND_FILE ISMI DEGISTIRILECEK
 send_file = 'test_gcode.txt'
+tup_ver_file = 'tup_ver.gcode'
 feedrate = ' F8000'
 total_tube_count = 0
 emergency_stop = False
@@ -162,13 +163,16 @@ if __name__ == "__main__":
                 elif 'home' in received:
                     # home
                     Move.home(motherboard, go_park_position=True)
-                elif 'tupu' in received:
+                elif 'tup' in received:
                     if 'tut' in received:
-                        # tupu-tut
+                        # tup-tut
                         Servo.run(motherboard, 2, 90)
                     elif 'birak' in received:
-                        # tupu-birak
+                        # tup-birak
                         Servo.run(motherboard, 2, 120)
+                    elif 'ver' in received:
+                        # tup-ver
+                        motherboard.start_printing(send_file)  # start process
                 elif 'pompa' in received:
                     if 'doldur' in received:
                         # pompa-doldur
@@ -194,6 +198,7 @@ if __name__ == "__main__":
                             # disp-2-kapat
                             Servo.run(motherboard, 3, 90)
                 elif 'kapak' in received:
+                    #  cover turning
                     if 'duz' in received:
                         # kapak - duz
                         Motor.run(motherboard, 1, 300)
