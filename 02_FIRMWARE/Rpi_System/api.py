@@ -1,10 +1,9 @@
 import time
-import glob
 import logging
 import os
 
 from Updater.Update_System import GithubDownloader, get_version_file_path
-from Updater.ScreenUploader import file_path
+from Updater import ScreenUploader
 from Updater.Util import write_file
 from Updater.Util import check_internet_connection
 from Communications.ElectroPrint import ElectroCommunication
@@ -17,8 +16,8 @@ logging.basicConfig(filename="./Logs/system.log", filemode='w', level=logging.DE
                     format='%(levelname)s : %(asctime)s : Line No. : %(lineno)d - %(message)s', )
 
 # Parameters #
-# TODO: PUBLIC REPO UZERINDEN YAPILACAK
-url = "https://api.github.com/repos/NLSS-Engineering-Public/21005_Medical_Tube_Capping/releases/latest"
+update_repo_url = "https://api.github.com/repos/{}/{}/releases/latest".format('NLSS-Engineering-Public',
+                                                                  '21005_Medical_Tube_Capping')
 screenPort = '/dev/ttyAMA0'
 
 # Objects #
@@ -27,37 +26,39 @@ screen = None
 
 # Variables
 screen_upload_file = '/gui.tft'
-# send_file = 'temp_send_g_code_file.txt'
-# TODO: SEND_FILE ISMI DEGISTIRILECEK
 
-send_file = 'test_gcode.gcode'
+# TODO: SEND_FILE ISMI DEGISTIRILECEK
+# send_file = 'process.gcode'
+send_file = 'tup_ver.gcode'
 tup_ver_file = 'tup_ver.gcode'
-feedrate = ' F8000'
+
 total_tube_count = 0
 emergency_stop = False
 wait_and_stop = False
-# extract_files_path = "./Files/EXTRACT/"
+park_pos_x = 200
+park_pos_y = 0
+park_position_string = 'G1 X{} Y{} F8000'.format(park_pos_x, park_pos_y)
+
+# shell commands
+shutdown = 'sudo shutdown -r now'
+logging.info('All global parameters loaded.')
 
 
 def startup_update():
     if check_internet_connection():
-        # gd = GithubDownloader(url, encrypted=True, path='./Files', unzip_path=extract_files_path)
-        gd = GithubDownloader(url, encrypted=True)
+        gd = GithubDownloader(update_repo_url, encrypted=True)
         if gd.is_new_version():  # if new version
             screen.send('page p_update')
             gd.upgrade_system()  # system upgrade
-            pwd = os.getcwd()
-            if glob.glob(pwd + screen_upload_file,
-                         recursive=True):  # if screen_upload_file in downloaded files
-                file_path = os.path.abspath(screen_upload_file)  # get abspath
+            pwd = os.getcwd()  # get current directory
+            if gd.check_screen_gui_update:
+                ScreenUploader.file_path = os.path.abspath(screen_upload_file)  # get abspath for "gui.tft" file
                 screen.send('page p_restart')
                 time.sleep(2)
                 os.system('python ' + pwd + '/Updater/ScreenUploader.py')
-                os.remove(pwd + screen_upload_file)
+                os.remove(ScreenUploader.file_path)
             write_file(get_version_file_path(), gd.get_latest_version())
-            # time.sleep(3)  # wait
-            # screen.send('page p_main')
-            os.system('sudo shutdown -r now')
+            os.system(shutdown)
 
 
 def create_connections(delay=2):
@@ -69,7 +70,7 @@ def create_connections(delay=2):
         if motherboard.is_connect():
             break
     time.sleep(delay)
-    motherboard.send_now('M106 S255')
+    motherboard.send_now('M106')
 
 
 if __name__ == "__main__":
@@ -78,10 +79,10 @@ if __name__ == "__main__":
     try:
         startup_update()
     except:
-        print('ERROR: Update System Failed.')
+        logging.error('Update System Failed.')
 
     create_connections()
-    print('Ready to use.')
+    logging.info('Ready to use.')
     screen.send('page p_main')  # set screen page to main page
     # Must move G28 (HOMING)
 
@@ -89,19 +90,15 @@ if __name__ == "__main__":
         try:
             if len(screen.last_received):
                 received = screen.last_received.lower()
-                print('main recv: {}'.format(received))
                 if 'start' in received:
                     miktar = s_protocol(received)  # Received Screen Command Convert to MB Command Array
                     time.sleep(0.5)  # wait
-                    # # Send Command to Motherboard
+                    # Send Command to Motherboard
                     screen.send('page p_running')  # display process page
 
                     for i in range(miktar):
-
                         motherboard.start_printing(send_file)  # start process
-
                         while motherboard.connection.printing:  # wait until finish process
-
                             if len(screen.last_received):  # listen screen
                                 received = screen.last_received.lower()  # received command from screen
                                 if 'emergency-stop' in received:  # finish process emergency
@@ -119,7 +116,6 @@ if __name__ == "__main__":
                                 elif 'wait-and-stop' in received:  # wait running process and after stop
                                     wait_and_stop = True
                             time.sleep(0.1)  # wait
-
                         if emergency_stop:
                             break
 
@@ -134,7 +130,7 @@ if __name__ == "__main__":
                         if wait_and_stop:
                             motherboard.connection.cancelprint()  # cancel process queue
                             time.sleep(0.5)  # wait
-                            motherboard.send_now("G1 X200 Y0 F8000")  # go park position
+                            motherboard.send_now(park_position_string)  # go park position
                             time.sleep(1)
                             screen.send('page p_main')  # return main page
                             break
@@ -211,12 +207,15 @@ if __name__ == "__main__":
                         # kapak-ters
                         Motor.run(motherboard, 1, -300)
 
-
                 screen.last_received = ""
                 received = ''
 
         except IndexError:
             pass
-        except:
-            raise
+        except Exception as e:
+            logging.error(e)
+            screen.send('page p_error_screen')
+            time.sleep(3)
+            screen.send('page p_main')
+            pass
         time.sleep(0.1)

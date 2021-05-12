@@ -1,3 +1,4 @@
+import glob
 import requests
 import os
 import re
@@ -106,8 +107,10 @@ class GithubDownloader:
                 unzip(self.decryptedPath + self.get_zip_file_name(), self.unzipPath)
                 logging.info('Decrypting Finished.')
                 logging.debug('System Upgraded.')
-
-
         except (FileNotFoundError, OSError):
             logging.error('Firstly, you need to download the file!')
             pass
+
+    @staticmethod
+    def check_screen_gui_update(pwd, screen_upload_file):
+        return glob.glob(pwd + screen_upload_file, recursive=True)

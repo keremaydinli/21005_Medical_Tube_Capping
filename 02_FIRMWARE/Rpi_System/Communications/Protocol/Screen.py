@@ -1,11 +1,12 @@
+import logging
+
+
 def get_file_lines(file):
     f = open(file, "r")
     return f.readlines()
 
 
 def s_protocol(received):
-    # TODO: bazi caseler tamamlanmadı gcodelar kontrol edilecek
-
     generated_g_codes = []
 
     received = str(received).lower()
@@ -15,21 +16,22 @@ def s_protocol(received):
     float_olcut = float(command.split('-')[0])  # 2.0
     int_miktar = int(command.split('-')[1])  # 10
 
-    print('DEBUG: olcut:{} - miktar:{}'.format(float_olcut, int_miktar))
+    logging.debug('DEBUG: olcut:{} - miktar:{}'.format(float_olcut, int_miktar))
 
-    one_shoot_g_codes = get_file_lines('one_shoot_g_codes.txt')
+    # one_shoot_g_codes = get_file_lines('one_shoot_g_codes.txt')
+    #
+    # #     generated_g_codes.append(';COUNT:{}'.format(index+1))
+    # for line in one_shoot_g_codes:
+    #     line = line.strip()
+    #     line = special_cases(line, float_olcut)
+    #     generated_g_codes.append(line)
+    #
+    # f = open('temp_send_g_code_file.txt', "w")
+    # for line in generated_g_codes:
+    #     f.write(line + '\n')
+    # f.close()
 
-    #     generated_g_codes.append(';COUNT:{}'.format(index+1))
-    for line in one_shoot_g_codes:
-        line = line.strip()
-        line = special_cases(line, float_olcut)
-        generated_g_codes.append(line)
-
-    f = open('temp_send_g_code_file.txt', "w")
-    for line in generated_g_codes:
-        f.write(line + '\n')
-    f.close()
-
+    # olcut 2mL oldugu icin dondurmemize gerek yok
     return int_miktar
 
 
