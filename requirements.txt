@@ -1,3 +1,5 @@
 requests==2.25.1
 pyserial==3.5
 pyAesCrypt==5.0.0
+cryptography~=3.4.7
+paho-mqtt~=1.5.1
