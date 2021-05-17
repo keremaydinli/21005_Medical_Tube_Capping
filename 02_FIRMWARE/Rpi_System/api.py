@@ -12,6 +12,9 @@ from Communications.Utils import serial_ports
 from Communications.Protocol.Screen import s_protocol
 from ArmFunctions import Motor, Servo, Move
 
+if os.path.exists("./Logs/system.log"):
+    os.remove("./Logs/system.log")
+
 logging.basicConfig(filename="./Logs/system.log", filemode='w', level=logging.DEBUG,
                     format='%(levelname)s : %(asctime)s : Line No. : %(lineno)d - %(message)s', )
 
