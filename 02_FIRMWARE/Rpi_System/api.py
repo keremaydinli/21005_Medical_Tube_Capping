@@ -51,7 +51,7 @@ def startup_update():
             screen.send('page p_update')
             gd.upgrade_system()  # system upgrade
             pwd = os.getcwd()  # get current directory
-            if gd.check_screen_gui_update:
+            if gd.check_screen_gui_update(pwd, screen_upload_file):
                 ScreenUploader.file_path = os.path.abspath(screen_upload_file)  # get abspath for "gui.tft" file
                 screen.send('page p_restart')
                 time.sleep(2)
