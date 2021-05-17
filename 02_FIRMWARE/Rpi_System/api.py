@@ -177,10 +177,10 @@ if __name__ == "__main__":
                 elif 'pompa' in received:
                     if 'doldur' in received:
                         # pompa-doldur
-                        Motor.run(motherboard, 0, 540, 6000)
+                        Motor.run(motherboard, 0, -540, 6000)
                     elif 'bosalt' in received:
                         # pompa-bosalt
-                        Motor.run(motherboard, 0, -540, 6000)
+                        Motor.run(motherboard, 0, 540, 6000)
                 elif 'disp' in received:
                     # sol acik asagi -> P1
                     # sag acik yukari -> P3

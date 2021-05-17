@@ -1,7 +1,7 @@
 from Encryption import Encryptor
 
 enc = Encryptor()
-file_path = 'v1.0.1.zip'
+file_path = 'v1.0.2.zip'
 enc_file_path = 'enc_' + file_path
 
 if __name__ == "__main__":
