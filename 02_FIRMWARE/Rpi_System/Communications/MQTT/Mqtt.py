@@ -4,7 +4,7 @@ import time
 
 mqttBroker = "mqtt.eclipseprojects.io"
 
-client = mqtt.Client("Medical")
+client = mqtt.Client("SERVER")
 client.connect(mqttBroker)
 
 while True:
